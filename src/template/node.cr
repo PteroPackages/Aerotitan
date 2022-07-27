@@ -15,8 +15,18 @@ abstract struct Node
 end
 
 struct Nop < Node
-  def initialize(token)
-    super token
+  def initialize(token : Token? = nil)
+    @start = if token
+        token.start
+      else
+        0
+      end
+
+    @end = if token
+        token.end
+      else
+        0
+      end
   end
 end
 
