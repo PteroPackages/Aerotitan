@@ -1,0 +1,14 @@
+name: aerotitan
+# description:
+version: 0.1.0
+crystal: 1.5.0
+repository: https://github.com/PteroPackages/Aerotitan
+
+authors:
+  - Devonte W <https://github.com/devnote-dev>
+
+targets:
+  aerotitan:
+    main: src/aerotitan.cr
+
+license: MIT
