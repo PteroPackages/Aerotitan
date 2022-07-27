@@ -14,7 +14,7 @@ class Interpreter
   def initialize(@ctx, @nodes)
     @res = Context.new
     @pos = 0
-    @node = next_node
+    @node = uninitialized Node
   end
 
   def current : Node
@@ -45,11 +45,34 @@ class Interpreter
         break
       end
     end
+
+    @res
   end
 
-  def resolve_node(node : Node) : Node
-    return unless node.is_a? FieldNode
-    # TODO
+  def resolve_node(node : Node?) : Node
+    return Nop.new() if node.nil?
+    return node unless node.is_a? FieldNode
+
+    value = @ctx.get_field node
+    token = Token.new
+    token.start = node.start
+    token.end = node.end
+    token.value = value.to_s
+
+    case value
+    when .is_a? Number
+      NumberLiteral.new token.start, token.end
+    when .is_a? String
+      StringLiteral.new token
+    when .is_a? Bool
+      BoolLiteral.new token
+    else
+      raise "cannot parse value"
+    end
+  end
+
+  private def ok?(node : Node) : Bool
+    !node.nil? || !node.is_a?(Nop)
   end
 
   def visit_field : Nil
@@ -59,8 +82,8 @@ class Interpreter
   def visit_op_eq : Nil
     left = resolve_node back_node
     right = resolve_node next_node
-    raise "missing left-side expression for equals" unless left
-    raise "missing right-side expression for equals" unless right
+    raise "missing left-side expression for equals" unless ok?(left)
+    raise "missing right-side expression for equals" unless ok?(right)
 
     unless left.accepts? right
       raise "cannot compare type #{left.to_s} to type #{right.to_s}"

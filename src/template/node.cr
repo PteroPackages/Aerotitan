@@ -4,57 +4,30 @@ abstract struct Node
   property start  : Int32
   property end    : Int32
 
-  def initialize(token : Token)
-    @start = token.start
-    @end = token.end
-  end
+  def initialize(@start, @end); end
 
   def accepts?(other : Node) : Bool
     false
   end
 end
 
-struct Nop < Node
-  def initialize(token : Token? = nil)
-    @start = if token
-        token.start
-      else
-        0
-      end
-
-    @end = if token
-        token.end
-      else
-        0
-      end
-  end
-end
+struct Nop < Node; end
 
 struct FieldNode < Node
   property name : String
 
-  def initialize(token)
-    super token
-    @name = token.value.not_nil!
-  end
+  def initialize(@start, @end, @name); end
 end
 
-struct AccessNode < Node
-  def initialize(token)
-    super token
-  end
-end
+struct AccessNode < Node; end
 
 struct NumberLiteral < Node
   property value : Float64
 
-  def initialize(token)
-    super token
-    @value = token.value.not_nil!.to_f
-  end
+  def initialize(@start, @end, @value); end
 
   def accepts?(other : Node) : Bool
-    other.is_a? self.class
+    other.is_a? self.class || other.is_a? Number
   end
 
   def to_s : String
@@ -65,10 +38,7 @@ end
 struct StringLiteral < Node
   property value : String
 
-  def initialize(token)
-    super token
-    @value = token.value.not_nil!
-  end
+  def initialize(@start, @end, @value); end
 
   def accepts?(other : Node) : Bool
     other.is_a? self.class || other.is_a? String
@@ -82,10 +52,8 @@ end
 struct BoolLiteral < Node
   property value : Bool
 
-  def initialize(token)
-    super token
-
-    case token.value
+  def initialize(@start, @end, value)
+    case value
     when "true"   then @value = true
     when "false"  then @value = false
     else
@@ -103,10 +71,6 @@ struct BoolLiteral < Node
 end
 
 struct NullLiteral < Node
-  def initialize(token)
-    super token
-  end
-
   def accepts?(other : Node) : Bool
     other.is_a? self.class || other.nil?
   end
@@ -116,8 +80,4 @@ struct NullLiteral < Node
   end
 end
 
-struct EqualsOp < Node
-  def initialize(token)
-    super token
-  end
-end
+struct EqualsOp < Node; end
