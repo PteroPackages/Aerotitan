@@ -18,7 +18,7 @@ class Lexer
     loop do
       token = next_token
       tokens << token
-      break if token.kind == Kind::Eof
+      break if token.kind == Kind::Eol
     end
 
     tokens
@@ -45,10 +45,13 @@ class Lexer
 
     case current
     when '\0'
-      @token.kind = :eof
+      @token.kind = :eol
       @pos += 1
     when '.'
-      @token.kind = :access
+      @token.kind = :dot
+      @pos += 1
+    when ','
+      @token.kind = :comma
       @pos += 1
     when ' ', '\t'
       skip_whitespace
@@ -56,12 +59,15 @@ class Lexer
       read_number
     when '"', '\''
       read_string
-    when '='
-      @token.kind = :op_eq
+    when '('
+      @token.kind = :left_paren
+      @pos += 1
+    when ')'
+      @token.kind = :right_paren
       @pos += 1
     when '_'
       if peek.alphanumeric?
-        read_field
+        read_ident
       else
         raise "unexpected token '_'"
       end
@@ -70,12 +76,12 @@ class Lexer
     when 't', 'f'
       maybe_read_bool
     when .ascii_alphanumeric?
-      read_field
+      read_ident
     else
       raise "unexpected token '#{current}'"
     end
 
-    @token.end = @pos
+    @token.stop = @pos
     @token
   end
 
@@ -94,7 +100,7 @@ class Lexer
       @pos += 1
     end
 
-    @token.value = @data[@token.start..@pos]
+    @token.value = @data[@token.start..@pos].join
   end
 
   def read_string : Nil
@@ -113,24 +119,24 @@ class Lexer
           break
         end
       when '\0'
-        raise "unexpected eof"
+        raise "unexpected eol"
       end
 
       @pos += 1
     end
 
-    @token.value = @data[@token.start..@pos-1]
+    @token.value = @data[@token.start..@pos-1].join
     @pos += 1
   end
 
-  def read_field : Nil
-    @token.kind = :field
+  def read_ident : Nil
+    @token.kind = :ident
 
     while current.alphanumeric? || current == '_'
       @pos += 1
     end
 
-    @token.value = @data[@token.start..@pos-1]
+    @token.value = @data[@token.start..@pos-1].join
   end
 
   def maybe_read_null : Nil
@@ -138,7 +144,7 @@ class Lexer
       @token.kind = :null
       @pos += 4
     else
-      read_field
+      read_ident
     end
   end
 
@@ -150,7 +156,7 @@ class Lexer
         @token.value = "true"
         @pos += 4
       else
-        read_field
+        read_ident
       end
     when 'f'
       if peek == 'a' && peek(2) == 'l' && peek(3) == 's' && peek(4) == 'e'
@@ -158,10 +164,10 @@ class Lexer
         @token.value = "false"
         @pos += 5
       else
-        read_field
+        read_ident
       end
     else
-      read_field
+      read_ident
     end
   end
 end

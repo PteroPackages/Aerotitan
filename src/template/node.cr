@@ -2,57 +2,49 @@ require "./token"
 
 abstract struct Node
   property start  : Int32
-  property end    : Int32
+  property stop   : Int32
 
-  def initialize(@start, @end); end
+  def initialize(@start, @stop); end
 
   def accepts?(other : Node) : Bool
     false
   end
 end
 
-struct Nop < Node; end
-
-struct FieldNode < Node
-  property name : String
-
-  def initialize(@start, @end, @name); end
-end
-
-struct AccessNode < Node; end
-
 struct NumberLiteral < Node
   property value : Float64
 
-  def initialize(@start, @end, @value); end
+  def initialize(@start, @stop, value)
+    @value = value.to_f
+  end
 
   def accepts?(other : Node) : Bool
     other.is_a? self.class || other.is_a? Number
   end
 
-  def to_s : String
-    "number"
+  def to_s(io : IO) : Nil
+    io << "number"
   end
 end
 
 struct StringLiteral < Node
   property value : String
 
-  def initialize(@start, @end, @value); end
+  def initialize(@start, @stop, @value); end
 
   def accepts?(other : Node) : Bool
     other.is_a? self.class || other.is_a? String
   end
 
-  def to_s : String
-    "string"
+  def to_s(io : IO) : Nil
+    io << "string"
   end
 end
 
 struct BoolLiteral < Node
   property value : Bool
 
-  def initialize(@start, @end, value)
+  def initialize(@start, @stop, value)
     case value
     when "true"   then @value = true
     when "false"  then @value = false
@@ -65,8 +57,8 @@ struct BoolLiteral < Node
     other.is_a? self.class || other.is_a? Bool
   end
 
-  def to_s : String
-    "boolean"
+  def to_s(io : IO) : Nil
+    io << "boolean"
   end
 end
 
@@ -75,9 +67,24 @@ struct NullLiteral < Node
     other.is_a? self.class || other.nil?
   end
 
-  def to_s : String
-    "null"
+  def to_s(io : IO) : Nil
+    io << "null"
   end
 end
 
-struct EqualsOp < Node; end
+struct FieldNode < Node
+  property name     : String
+  property parents  : Array(String)
+
+  def initialize(@start, @stop, names)
+    @name = names[0]
+    @parents = names[1..]
+  end
+end
+
+struct FuncNode < Node
+  property name : String
+  property args : Array(Node)
+
+  def initialize(@start, @stop, @name, @args); end
+end
