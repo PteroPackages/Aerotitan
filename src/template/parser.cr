@@ -54,7 +54,7 @@ module Aerotitan::Template
         case t.kind
         when Kind::Dot
           next
-        when Kind::Comma
+        when Kind::Comma, Kind::RightParen
           stop = @tokens[@pos -= 1].stop
           break
         when Kind::Ident
@@ -92,8 +92,13 @@ module Aerotitan::Template
           next
         when Kind::Ident
           args << parse_ident t
-          _ = expect_token Kind::Dot, Kind::Comma
-          next
+          ex = expect_token Kind::Dot, Kind::Comma, Kind::RightParen
+          if ex.kind == Kind::RightParen
+            stop = ex.stop
+            break
+          else
+            next
+          end
         when Kind::RightParen
           stop = t.stop
           break

@@ -78,8 +78,8 @@ module Aerotitan::Template
     property parents  : Array(String)
 
     def initialize(@start, @stop, names)
-      @name = names[0]
-      @parents = names[1..]
+      @name = names.last
+      @parents = names[..names.size-2]
     end
   end
 

@@ -101,7 +101,7 @@ module Aerotitan::Template
         @pos += 1
       end
 
-      @token.value = @data[@token.start..@pos].join
+      @token.value = @data[@token.start..@pos-1].join
     end
 
     def read_string : Nil
