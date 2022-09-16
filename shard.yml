@@ -7,6 +7,10 @@ repository: https://github.com/PteroPackages/Aerotitan
 authors:
   - Devonte W <https://github.com/devnote-dev>
 
+dependencies:
+  cli:
+    github: devnote-dev/cli.cr
+
 targets:
   aerotitan:
     main: src/aerotitan.cr

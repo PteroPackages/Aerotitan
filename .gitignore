@@ -7,5 +7,7 @@
 *.dwarf
 *.cmd
 *.sh
-aero-cfg.yml
+
+shard.lock
+.aero.yml
 main.cr
