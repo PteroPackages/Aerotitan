@@ -22,7 +22,7 @@ module Aerotitan::Syntax
         end
       end
 
-      @nodes.select &.is_a?(Operator)
+      @nodes
     end
 
     def parse_node(token : Token) : Node
