@@ -1,18 +1,20 @@
-require "./token"
-
-module Aerotitan::Template
+module Aerotitan::Syntax
   abstract struct Node
     property start  : Int32
     property stop   : Int32
 
-    def initialize(@start, @stop); end
+    def initialize(@start, @stop)
+    end
 
     def accepts?(other : Node) : Bool
       false
     end
   end
 
-  struct NumberLiteral < Node
+  abstract struct Literal < Node
+  end
+
+  struct NumberLiteral < Literal
     property value : Float64
 
     def initialize(@start, @stop, value)
@@ -28,10 +30,11 @@ module Aerotitan::Template
     end
   end
 
-  struct StringLiteral < Node
+  struct StringLiteral < Literal
     property value : String
 
-    def initialize(@start, @stop, @value); end
+    def initialize(@start, @stop, @value)
+    end
 
     def accepts?(other : Node) : Bool
       other.is_a? self.class || other.is_a? String
@@ -42,7 +45,7 @@ module Aerotitan::Template
     end
   end
 
-  struct BoolLiteral < Node
+  struct BoolLiteral < Literal
     property value : Bool
 
     def initialize(@start, @stop, value)
@@ -63,7 +66,11 @@ module Aerotitan::Template
     end
   end
 
-  struct NullLiteral < Node
+  struct NullLiteral < Literal
+    def value : Nil
+      nil
+    end
+
     def accepts?(other : Node) : Bool
       other.is_a? self.class || other.nil?
     end
@@ -73,20 +80,27 @@ module Aerotitan::Template
     end
   end
 
-  struct FieldNode < Node
-    property name     : String
-    property parents  : Array(String)
+  struct Field < Literal
+    property value : String
 
-    def initialize(@start, @stop, names)
-      @name = names.last
-      @parents = names[..names.size-2]
+    def initialize(@start, @stop, @value)
+    end
+
+    def to_s(io : IO)
+      io << @value
     end
   end
 
-  struct FuncNode < Node
-    property name : String
-    property args : Array(Node)
+  struct Operator < Node
+    property symbol : String
+    property left : Literal
+    property right : Literal
 
-    def initialize(@start, @stop, @name, @args); end
+    def initialize(@start, @stop, @symbol, @left, @right)
+    end
+
+    def to_s(io : IO)
+      io << @symbol
+    end
   end
 end

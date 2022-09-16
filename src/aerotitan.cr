@@ -1,4 +1,6 @@
-require "./template/**"
+require "./bindings"
+require "./compile"
+require "./syntax/*"
 
 module Aerotitan
   VERSION = "0.1.0"
