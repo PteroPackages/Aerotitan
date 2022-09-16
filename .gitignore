@@ -8,3 +8,4 @@
 *.cmd
 *.sh
 aero-cfg.yml
+main.cr
