@@ -31,7 +31,7 @@ module Aerotitan::Syntax
       case token.kind
       in Kind::Number
         if token.value!.ends_with? '.'
-          raise "Invalid number literal"
+          raise SyntaxError.new("Invalid number literal", token.start, token.stop)
         end
 
         node = NumberLiteral.new token.start, token.stop, token.value!
@@ -45,7 +45,7 @@ module Aerotitan::Syntax
         return parse_node @tokens[@pos += 1]
       in Kind::Ident
         if token.value!.ends_with?('.') || token.value!.ends_with?('_')
-          raise "Invalid field name"
+          raise SyntaxError.new("Invalid field name", token.start, token.stop)
         end
 
         split = token.value!.split '.'
@@ -54,20 +54,25 @@ module Aerotitan::Syntax
         node = Field.new token.start, token.stop, token.value!
       in Kind::Operator
         unless token.value!.in?(Parser::VALID_OPERATORS)
-          raise "Invalid operator '#{token.value!}'"
+          raise SyntaxError.new("Invalid operator '#{token.value!}'", token.start, token.stop)
         end
 
         if left = previous_node
-          raise "Cannot use type #{left} for left-side expression" unless left.is_a?(Literal)
+          unless left.is_a?(Literal)
+            raise SyntaxError.new("Cannot use type #{left} for left-side expression", token.start, token.stop)
+          end
+
           right = parse_node @tokens[@pos + 1]
-          raise "Cannot use type #{right} for right-side expression" unless right.is_a?(Literal)
+          unless right.is_a?(Literal)
+            raise SyntaxError.new("Cannot use type #{right} for right-side expression", token.start, token.stop)
+          end
 
           node = Operator.new token.start, token.stop, token.value!, left, right
         else
-          raise "Missing left-side expression for operator"
+          raise SyntaxError.new("Missing left-side expression for operator", token.start, token.stop)
         end
       in Kind::Eol
-        raise "Unexpected End-Of-Line"
+        raise SyntaxError.new("Unexpected End-Of-Line", token.start, token.stop)
       end
 
       node

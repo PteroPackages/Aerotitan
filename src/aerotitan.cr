@@ -5,6 +5,7 @@ require "./commands/*"
 require "./syntax/*"
 require "./actions"
 require "./context"
+require "./errors"
 require "./models"
 
 module Aerotitan

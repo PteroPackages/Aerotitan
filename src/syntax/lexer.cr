@@ -65,7 +65,7 @@ module Aerotitan::Syntax
         if peek_char.ascii_alphanumeric?
           read_ident
         else
-          raise "Unexpected token '_'"
+          raise SyntaxError.new("Unexpected token '_'", @token.start, @reader.pos)
         end
       when 'n'
         read_null_or_ident
@@ -76,7 +76,7 @@ module Aerotitan::Syntax
       when .in?(Lexer::VALID_OPERATORS)
         read_operator
       else
-        raise "Unexpected token '#{current_char}'"
+        raise SyntaxError.new("Unexpected token '#{current_char}'", @token.start, @reader.pos)
       end
 
       @token.stop = @reader.pos
@@ -100,7 +100,7 @@ module Aerotitan::Syntax
       loop do
         case current_char
         when '\0'
-          raise "Unexpected End-Of-Line"
+          raise SyntaxError.new("Unexpected End-Of-Line", 0, 0)
         when '\\'
           escaped = peek_char == delim
         when delim

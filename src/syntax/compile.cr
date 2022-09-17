@@ -17,11 +17,11 @@ module Aerotitan::Syntax
         names = node.left.value.as(String).split '.'
 
         unless names[0] == key
-          raise "Unknown object '#{names[0]}'"
+          raise SyntaxError.new("Unknown object '#{names[0]}'", node.start, node.stop)
         end
 
         unless fields.includes?(names[1..])
-          raise "Unknown field '#{names[1..]}' for object #{key}"
+          raise SyntaxError.new("Unknown field '#{names[1..]}' for object #{key}", node.start, node.stop)
         end
       end
 
@@ -29,11 +29,11 @@ module Aerotitan::Syntax
         names = node.right.value.as(String).split '.'
 
         unless names[0] == key
-          raise "Unknown object '#{names[0]}'"
+          raise SyntaxError.new("Unknown object '#{names[0]}'", node.start, node.stop)
         end
 
         unless fields.includes?(node.right.value)
-          raise "Unknown field '#{names[1..]}' for object #{key}"
+          raise SyntaxError.new("Unknown field '#{names[1..]}' for object #{key}", node.start, node.stop)
         end
       end
     end
