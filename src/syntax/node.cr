@@ -80,7 +80,13 @@ module Aerotitan::Syntax
     end
   end
 
-  alias NullableString = StringLiteral
+  abstract struct Nullable < Node
+  end
+
+  struct NullableString < Nullable
+  end
+
+  alias ValueRef = Literal | Nullable
 
   struct Field < Literal
     property value : String
