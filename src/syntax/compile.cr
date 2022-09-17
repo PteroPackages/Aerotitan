@@ -5,7 +5,7 @@ module Aerotitan::Syntax
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
-    validate_nodes nodes, key, fields
+    validate_nodes nodes, key, model
     nodes.map { |n| create_entry(n) }
   end
 
@@ -42,7 +42,7 @@ module Aerotitan::Syntax
 
   private def create_entry(op : Operator) : Context::Entry
     {% begin %}
-      case op.symbol
+      case op.kind
       {% for symbol in Parser::VALID_OPERATORS %}
       {% not_equality = !{"==", "!="}.includes?(symbol) %}
       when {{ symbol }}

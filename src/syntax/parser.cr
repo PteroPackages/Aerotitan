@@ -1,4 +1,37 @@
 module Aerotitan::Syntax
+  enum Operators
+    Eq
+    Neq
+    Lt
+    Lte
+    Gt
+    Gte
+
+    def self.from(value : String)
+      case value
+      when "==" then Operators::Eq
+      when "!=" then Operators::Neq
+      when "<"  then Operators::Lt
+      when "<=" then Operators::Lte
+      when ">"  then Operators::Gt
+      when ">=" then Operators::Gte
+      else
+        raise "invalid operator"
+      end
+    end
+
+    def to_s : String
+      case self
+      in Operators::Eq  then "=="
+      in Operators::Neq then "!="
+      in Operators::Lt  then "<"
+      in Operators::Lte then "<="
+      in Operators::Gt  then ">"
+      in Operators::Gte then ">="
+      end
+    end
+  end
+
   class Parser
     VALID_OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
 
@@ -67,7 +100,7 @@ module Aerotitan::Syntax
             raise SyntaxError.new("Cannot use type #{right} for right-side expression", token.start, token.stop)
           end
 
-          node = Operator.new token.start, token.stop, token.value!, left, right
+          node = Operator.new token.start, token.stop, Operators.from(token.value!), left, right
         else
           raise SyntaxError.new("Missing left-side expression for operator", token.start, token.stop)
         end
