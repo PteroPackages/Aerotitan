@@ -27,7 +27,7 @@ module Aerotitan::Syntax
         field = node.right.value.as(String)
 
         unless field.starts_with? key
-          raise SyntaxError.new("Unknown object '#{field}'", node.start, node.stop)
+          raise SyntaxError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
         end
 
         unless model.has_key? field
@@ -43,9 +43,16 @@ module Aerotitan::Syntax
   private def create_entry(op : Operator) : Context::Entry
     {% begin %}
       case op.kind
-      {% for symbol in Parser::VALID_OPERATORS %}
-      {% not_equality = !{"==", "!="}.includes?(symbol) %}
-      when {{ symbol }}
+      {% for kind, symbol in {
+        :Eq => "==",
+        :Neq => "!=",
+        :Lt => "<",
+        :Lte => "<=",
+        :Gt => ">",
+        :Gte => ">="
+      } %}
+      {% not_equality = !(kind == :Eq || kind == :Neq) %}
+      when Operators::{{ kind.id }}
         Context::Entry.new do |data|
           left = if op.left.is_a?(Field)
             names = op.left.value.as(String).split('.')[1..]
