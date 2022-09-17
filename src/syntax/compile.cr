@@ -1,7 +1,7 @@
 module Aerotitan::Syntax
-  def self.compile(input : String,
-                   key : String,
-                   fields : Array(String)) : Array(Context::Entry)
+  extend self
+
+  def compile(input : String, key : String, model : Models::Info) : Array(Context::Entry)
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
@@ -9,37 +9,38 @@ module Aerotitan::Syntax
     nodes.map { |n| create_entry(n) }
   end
 
-  private def self.validate_nodes(nodes : Array(Operator),
-                                  key : String,
-                                  fields : Array(String)) : Nil
+  private def validate_nodes(nodes : Array(Operator), key : String, model : Models::Info) : Nil
     nodes.each do |node|
       if node.left.is_a?(Field)
-        names = node.left.value.as(String).split '.'
+        field = node.left.value.as(String)
 
-        unless names[0] == key
-          raise SyntaxError.new("Unknown object '#{names[0]}'", node.start, node.stop)
+        unless field.starts_with? key
+          raise SyntaxError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
         end
 
-        unless names[1..].all? &.in?(fields)
-          raise SyntaxError.new("Unknown field '#{names[1..]}' for object #{key}", node.start, node.stop)
+        unless model.has_key? field
+          raise SyntaxError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
         end
       end
 
       if node.right.is_a?(Field)
-        names = node.right.value.as(String).split '.'
+        field = node.right.value.as(String)
 
-        unless names[0] == key
-          raise SyntaxError.new("Unknown object '#{names[0]}'", node.start, node.stop)
+        unless field.starts_with? key
+          raise SyntaxError.new("Unknown object '#{field}'", node.start, node.stop)
         end
 
-        unless fields.includes?(node.right.value)
-          raise SyntaxError.new("Unknown field '#{names[1..]}' for object #{key}", node.start, node.stop)
+        unless model.has_key? field
+          raise SyntaxError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
         end
       end
+
+      leftval = node.left.is_a?(Field) ? model[node.left.value] : node.left
+      rightval = node.right.is_a?(Field) ? model[node.right.value] : node.right
     end
   end
 
-  private def self.create_entry(op : Operator) : Context::Entry
+  private def create_entry(op : Operator) : Context::Entry
     {% begin %}
       case op.symbol
       {% for symbol in Parser::VALID_OPERATORS %}
@@ -69,7 +70,7 @@ module Aerotitan::Syntax
     {% end %}
   end
 
-  private def self.walk(data : JSON::Any, keys : Array(String)) : JSON::Any
+  private def walk(data : JSON::Any, keys : Array(String)) : JSON::Any
     if val = data[keys[0]]?
       if val.raw.is_a?(Hash)
         return walk val, keys[1..]
