@@ -1,6 +1,6 @@
 module Aerotitan::Syntax
   class Parser
-    VALID_OPERATORS = {"+", "-", "*", "/", "=", "!="}
+    VALID_OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
 
     property tokens : Array(Token)
     property nodes : Array(Node)

@@ -27,7 +27,7 @@ module Aerotitan::Syntax
   end
 
   class Lexer
-    VALID_OPERATORS = {'+', '-', '*', '/', '=', '!'}
+    VALID_OPERATORS = {"=", "!", "<", ">"}
 
     property reader : Char::Reader
     property token : Token
