@@ -1,5 +1,5 @@
 module Aerotitan::Models
-  USER_FIELDS = [
+  USER = [
     "2fa",
     "created_at",
     "email",
