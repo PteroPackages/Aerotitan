@@ -80,6 +80,9 @@ module Aerotitan::Syntax
     end
   end
 
+  struct NullableString < Literal
+  end
+
   struct Field < Literal
     property value : String
 
