@@ -141,6 +141,7 @@ module Aerotitan::Syntax
     def read_null_or_ident : Nil
       if next_char == 'u' && next_char == 'l' && next_char == 'l'
         @token.kind = :null
+        next_char
       else
         read_ident
       end
@@ -151,6 +152,7 @@ module Aerotitan::Syntax
         if next_char == 'r' && next_char == 'u' && next_char == 'e'
           @token.kind = :bool
           @token.value = "true"
+          next_char
         else
           read_ident
         end
@@ -158,6 +160,7 @@ module Aerotitan::Syntax
         if next_char == 'a' && next_char == 'l' && next_char == 's' && next_char == 'e'
           @token.kind = :bool
           @token.value = "false"
+          next_char
         else
           read_ident
         end
