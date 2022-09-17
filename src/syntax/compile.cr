@@ -5,7 +5,7 @@ module Aerotitan::Syntax
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
-    validate_nodes(nodes, key, fields)
+    validate_nodes nodes, key, fields
     nodes.map { |n| create_entry(n) }
   end
 
@@ -40,43 +40,43 @@ module Aerotitan::Syntax
   end
 
   private def self.create_entry(op : Operator) : Context::Entry
-    left = op.left.value
-    right = op.right.value
+    {% begin %}
+      case op.symbol
+      {% for symbol in Parser::VALID_OPERATORS %}
+      {% not_equality = !{"==", "!="}.includes?(symbol) %}
+      when {{ symbol }}
+        Context::Entry.new do |data|
+          left = if op.left.is_a?(Field)
+            names = op.left.value.as(String).split('.')[1..]
+            walk(data, names){% if not_equality %}.as_i.to_f{% end %}
+          else
+            op.left.value
+          end{% if not_equality %}.as(Float64){% end %}
 
-    case op.symbol
-    when "=="
-      Context::Entry.new do |data|
-        expand_node(left) == expand_node(right)
+          right = if op.right.is_a?(Field)
+            names = op.right.value.as(String).split('.')[1..]
+            walk(data, names){% if not_equality %}.as_i.to_f{% end %}
+          else
+            op.right.value
+          end{% if not_equality %}.as(Float64){% end %}
+
+          left {{ symbol.id }} right
+        end
+      {% end %}
+      else
+        raise "unreachable"
       end
-    when "!="
-      Context::Entry.new do |data|
-        expand_node(left) != expand_node(right)
-      end
-    when "<"
-      Context::Entry.new do |data|
-        expand_node(left.as(Float64)) < expand_node(right.as(Float64))
-      end
-    when "<="
-      Context::Entry.new do |data|
-        expand_node(left.as(Float64)) <= expand_node(right.as(Float64))
-      end
-    when ">"
-      Context::Entry.new do |data|
-        expand_node(left.as(Float64)) > expand_node(right.as(Float64))
-      end
-    else # when ">="
-      Context::Entry.new do |data|
-        expand_node(left.as(Float64)) >= expand_node(right.as(Float64))
-      end
-    end
+    {% end %}
   end
 
-  private macro expand_node(node)
-    {% if node.is_a?(Field) %}
-      {% names = node.value.split('.') %}
-      {{ names[0].id }}{% for name in names[1...] %}[{{ name.id.stringify }}]{% end %}
-    {% else %}
-      {{ node }}
-    {% end %}
+  private def self.walk(data : JSON::Any, keys : Array(String)) : JSON::Any
+    if val = data[keys[0]]?
+      if val.raw.is_a?(Hash)
+        return walk val, keys[1..]
+      else
+        return val
+      end
+    end
+    data # unreachable
   end
 end
