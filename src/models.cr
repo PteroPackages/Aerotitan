@@ -1,8 +1,8 @@
 module Aerotitan::Models
-  alias Info = Hash(String, Syntax::Literal)
+  alias Info = Hash(String, Syntax::Literal.class)
 
-  USER : Info = {
-    "2fa" => Syntax::BooleanLiteral,
+  USER = {
+    "2fa" => Syntax::BoolLiteral,
     "created_at" => Syntax::StringLiteral,
     "email" => Syntax::StringLiteral,
     "external_id" => Syntax::NullableString,
@@ -10,9 +10,9 @@ module Aerotitan::Models
     "id" => Syntax::NumberLiteral,
     "language" => Syntax::StringLiteral,
     "last_name" => Syntax::StringLiteral,
-    "root_admin" => Syntax::BooleanLiteral,
+    "root_admin" => Syntax::BoolLiteral,
     "updated_at" => Syntax::NullableString,
     "username" => Syntax::StringLiteral,
     "uuid" => Syntax::StringLiteral
-  }
+  }.as(Info)
 end

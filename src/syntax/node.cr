@@ -80,8 +80,7 @@ module Aerotitan::Syntax
     end
   end
 
-  struct NullableString < Literal
-  end
+  alias NullableString = StringLiteral
 
   struct Field < Literal
     property value : String
@@ -95,15 +94,15 @@ module Aerotitan::Syntax
   end
 
   struct Operator < Node
-    property symbol : String
+    property kind : Operators
     property left : Literal
     property right : Literal
 
-    def initialize(@start, @stop, @symbol, @left, @right)
+    def initialize(@start, @stop, @kind, @left, @right)
     end
 
     def to_s(io : IO)
-      io << @symbol
+      io << @kind
     end
   end
 end
