@@ -1,8 +1,11 @@
 require "cli"
+require "json"
 
-require "./bindings"
-require "./compile"
+require "./commands/*"
 require "./syntax/*"
+require "./actions"
+require "./context"
+require "./models"
 
 module Aerotitan
   VERSION = "0.1.0"
