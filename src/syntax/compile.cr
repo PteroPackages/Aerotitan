@@ -20,7 +20,7 @@ module Aerotitan::Syntax
           raise SyntaxError.new("Unknown object '#{names[0]}'", node.start, node.stop)
         end
 
-        unless fields.includes?(names[1..])
+        unless names[1..].all? &.in?(fields)
           raise SyntaxError.new("Unknown field '#{names[1..]}' for object #{key}", node.start, node.stop)
         end
       end
