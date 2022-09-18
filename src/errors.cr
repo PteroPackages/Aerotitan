@@ -12,11 +12,11 @@ module Aerotitan
     getter start : Int32
     getter stop : Int32
 
-    def initialize(kind : OpKind, left : ValueRef, right : ValueRef)
+    def initialize(kind : Syntax::OpKind, left : Syntax::ValueRef, right : Syntax::ValueRef)
       @start = left.start
       @stop = right.stop
 
-      super "Cannot compare #{kind} with type #{left} and #{right}"
+      super "Cannot compare #{kind} with types #{left} and #{right}"
     end
   end
 end
