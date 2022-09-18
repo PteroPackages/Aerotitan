@@ -35,8 +35,8 @@ module Aerotitan::Syntax
         end
       end
 
-      leftval = node.left.is_a?(Field) ? model[node.left.value] : node.left
-      rightval = node.right.is_a?(Field) ? model[node.right.value] : node.right
+      leftval = node.left.is_a?(Field) ? model[node.left.value].default : node.left
+      rightval = node.right.is_a?(Field) ? model[node.right.value].default : node.right
 
       compare_values node.kind, leftval, rightval
     end
@@ -45,7 +45,7 @@ module Aerotitan::Syntax
   private def compare_values(kind : OpKind, left : ValueRef, right : ValueRef)
     case kind
     when OpKind::Eq, OpKind::Neq
-      raise ComparisonError.new(kind, left, right) unless left.accepts? right.class.as(ValueRef.class)
+      raise ComparisonError.new(kind, left, right) unless left.accepts? right
     else
       unless left.is_a?(NumberLiteral) && right.is_a?(NumberLiteral)
         raise ComparisonError.new(kind, left, right)

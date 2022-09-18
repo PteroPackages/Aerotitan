@@ -1,5 +1,13 @@
 module Aerotitan::Syntax
+  private module Default
+    abstract def default
+  end
+
   abstract struct Node
+    macro inherited
+      extend Default
+    end
+
     property start  : Int32
     property stop   : Int32
 
@@ -7,10 +15,6 @@ module Aerotitan::Syntax
     end
 
     def accepts?(other : Node) : Bool
-      false
-    end
-
-    def accepts?(other : Node.class) : Bool
       false
     end
   end
@@ -25,8 +29,12 @@ module Aerotitan::Syntax
       @value = value.to_f
     end
 
-    def accepts?(other : Literal.class) : Bool
-      other == NumberLiteral
+    def self.default
+      new 0, 0, 0
+    end
+
+    def accepts?(other : Node) : Bool
+      other.is_a?(NumberLiteral)
     end
 
     def to_s(io : IO) : Nil
@@ -40,12 +48,12 @@ module Aerotitan::Syntax
     def initialize(@start, @stop, @value)
     end
 
-    def accepts?(other : Node) : Bool
-      other.is_a?(StringLiteral) || other.is_a?(NullableString)
+    def self.default
+      new 0, 0, ""
     end
 
-    def accepts?(other : Node.class) : Bool
-      other == StringLiteral || other == NullableString
+    def accepts?(other : Node) : Bool
+      other.is_a?(StringLiteral) || other.is_a?(NullableString)
     end
 
     def to_s(io : IO) : Nil
@@ -65,12 +73,12 @@ module Aerotitan::Syntax
       end
     end
 
-    def accepts?(other : Node) : Bool
-      other.is_a?(BoolLiteral)
+    def self.default
+      new 0, 0, false
     end
 
-    def accepts?(other : Node.class) : Bool
-      other == BoolLiteral
+    def accepts?(other : Node) : Bool
+      other.is_a?(BoolLiteral)
     end
 
     def to_s(io : IO) : Nil
@@ -79,16 +87,16 @@ module Aerotitan::Syntax
   end
 
   struct NullLiteral < Literal
+    def self.default
+      new 0, 0
+    end
+
     def value : Nil
       nil
     end
 
     def accepts?(other : Node) : Bool
       other.is_a?(NullLiteral) || other.is_a?(Nullable)
-    end
-
-    def accepts?(other : Node.class) : Bool
-      other < Nullable
     end
 
     def to_s(io : IO) : Nil
@@ -100,12 +108,12 @@ module Aerotitan::Syntax
   end
 
   struct NullableString < Nullable
-    def self.accepts?(other : Node) : Bool
-      other.is_a?(NullableString) || other.is_a?(StringLiteral)
+    def self.default
+      new 0, 0
     end
 
-    def self.accepts(other : Node.class) : Bool
-      other == NullableString || other == StringLiteral
+    def self.accepts?(other : Node) : Bool
+      other.is_a?(NullableString) || other.is_a?(StringLiteral)
     end
   end
 
@@ -115,6 +123,10 @@ module Aerotitan::Syntax
     property value : String
 
     def initialize(@start, @stop, @value)
+    end
+
+    def self.default
+      new 0, 0, ""
     end
 
     def to_s(io : IO)
@@ -128,6 +140,10 @@ module Aerotitan::Syntax
     property right : Literal
 
     def initialize(@start, @stop, @kind, @left, @right)
+    end
+
+    def self.default
+      new 0, 0, :eq, NullLiteral.default, NullLiteral.default
     end
 
     def to_s(io : IO)
