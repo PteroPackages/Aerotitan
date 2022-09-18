@@ -123,7 +123,7 @@ module Aerotitan::Syntax
   end
 
   struct Operator < Node
-    property kind : Operators
+    property kind : OpKind
     property left : Literal
     property right : Literal
 

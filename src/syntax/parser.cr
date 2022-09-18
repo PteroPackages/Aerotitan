@@ -1,5 +1,5 @@
 module Aerotitan::Syntax
-  enum Operators
+  enum OpKind
     Eq
     Neq
     Lt
@@ -9,12 +9,12 @@ module Aerotitan::Syntax
 
     def self.from(value : String)
       case value
-      when "==" then Operators::Eq
-      when "!=" then Operators::Neq
-      when "<"  then Operators::Lt
-      when "<=" then Operators::Lte
-      when ">"  then Operators::Gt
-      when ">=" then Operators::Gte
+      when "==" then OpKind::Eq
+      when "!=" then OpKind::Neq
+      when "<"  then OpKind::Lt
+      when "<=" then OpKind::Lte
+      when ">"  then OpKind::Gt
+      when ">=" then OpKind::Gte
       else
         raise "invalid operator"
       end
@@ -22,12 +22,12 @@ module Aerotitan::Syntax
 
     def to_s : String
       case self
-      in Operators::Eq  then "=="
-      in Operators::Neq then "!="
-      in Operators::Lt  then "<"
-      in Operators::Lte then "<="
-      in Operators::Gt  then ">"
-      in Operators::Gte then ">="
+      in OpKind::Eq  then "=="
+      in OpKind::Neq then "!="
+      in OpKind::Lt  then "<"
+      in OpKind::Lte then "<="
+      in OpKind::Gt  then ">"
+      in OpKind::Gte then ">="
       end
     end
   end
@@ -100,7 +100,7 @@ module Aerotitan::Syntax
             raise SyntaxError.new("Cannot use type #{right} for right-side expression", token.start, token.stop)
           end
 
-          node = Operator.new token.start, token.stop, Operators.from(token.value!), left, right
+          node = Operator.new token.start, token.stop, OpKind.from(token.value!), left, right
         else
           raise SyntaxError.new("Missing left-side expression for operator", token.start, token.stop)
         end

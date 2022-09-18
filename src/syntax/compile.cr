@@ -42,9 +42,9 @@ module Aerotitan::Syntax
     end
   end
 
-  private def compare_values(kind : Operators, left : ValueRef, right : ValueRef)
+  private def compare_values(kind : OpKind, left : ValueRef, right : ValueRef)
     case kind
-    when Operators::Eq, Operators::Neq
+    when OpKind::Eq, OpKind::Neq
       raise ComparisonError.new(kind, left, right) unless left.accepts? right.class.as(ValueRef.class)
     else
       unless left.is_a?(NumberLiteral) && right.is_a?(NumberLiteral)
@@ -65,7 +65,7 @@ module Aerotitan::Syntax
         :Gte => ">="
       } %}
       {% not_equality = !(kind == :Eq || kind == :Neq) %}
-      when Operators::{{ kind.id }}
+      when OpKind::{{ kind.id }}
         Context::Entry.new do |data|
           left = if op.left.is_a?(Field)
             names = op.left.value.as(String).split('.')[1..]
