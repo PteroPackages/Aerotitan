@@ -112,8 +112,12 @@ module Aerotitan::Syntax
       new 0, 0
     end
 
-    def self.accepts?(other : Node) : Bool
-      other.is_a?(NullableString) || other.is_a?(StringLiteral)
+    def accepts?(other : Node) : Bool
+      other.is_a?(NullableString) || other.is_a?(StringLiteral) || other.is_a?(NullLiteral)
+    end
+
+    def to_s(io : IO) : Nil
+      io << "nullable string"
     end
   end
 
