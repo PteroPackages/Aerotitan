@@ -9,6 +9,10 @@ module Aerotitan::Syntax
     def accepts?(other : Node) : Bool
       false
     end
+
+    def accepts?(other : Node.class) : Bool
+      false
+    end
   end
 
   abstract struct Literal < Node
@@ -21,8 +25,8 @@ module Aerotitan::Syntax
       @value = value.to_f
     end
 
-    def accepts?(other : Node) : Bool
-      other.is_a? self.class || other.is_a? Number
+    def accepts?(other : Literal.class) : Bool
+      other == NumberLiteral
     end
 
     def to_s(io : IO) : Nil
@@ -37,7 +41,11 @@ module Aerotitan::Syntax
     end
 
     def accepts?(other : Node) : Bool
-      other.is_a? self.class || other.is_a? String
+      other.is_a?(StringLiteral) || other.is_a?(NullableString)
+    end
+
+    def accepts?(other : Node.class) : Bool
+      other == StringLiteral || other == NullableString
     end
 
     def to_s(io : IO) : Nil
@@ -58,7 +66,11 @@ module Aerotitan::Syntax
     end
 
     def accepts?(other : Node) : Bool
-      other.is_a? self.class || other.is_a? Bool
+      other.is_a?(BoolLiteral)
+    end
+
+    def accepts?(other : Node.class) : Bool
+      other == BoolLiteral
     end
 
     def to_s(io : IO) : Nil
@@ -72,7 +84,11 @@ module Aerotitan::Syntax
     end
 
     def accepts?(other : Node) : Bool
-      other.is_a? self.class || other.nil?
+      other.is_a?(NullLiteral) || other.is_a?(Nullable)
+    end
+
+    def accepts?(other : Node.class) : Bool
+      other < Nullable
     end
 
     def to_s(io : IO) : Nil
@@ -84,6 +100,13 @@ module Aerotitan::Syntax
   end
 
   struct NullableString < Nullable
+    def self.accepts?(other : Node) : Bool
+      other.is_a?(NullableString) || other.is_a?(StringLiteral)
+    end
+
+    def self.accepts(other : Node.class) : Bool
+      other == NullableString || other == StringLiteral
+    end
   end
 
   alias ValueRef = Literal | Nullable

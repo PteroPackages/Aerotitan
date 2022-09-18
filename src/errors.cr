@@ -7,4 +7,16 @@ module Aerotitan
       super message + " (#{@start}:#{@stop})"
     end
   end
+
+  class ComparisonError < Exception
+    getter start : Int32
+    getter stop : Int32
+
+    def initialize(kind : Operators, left : ValueRef, right : ValueRef)
+      @start = left.start
+      @stop = right.stop
+
+      super "Cannot compare #{kind} with type #{left} and #{right}"
+    end
+  end
 end
