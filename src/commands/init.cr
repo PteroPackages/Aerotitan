@@ -1,17 +1,17 @@
 module Aerotitan::Commands
-  class InitCommand < CLI::Command
+  class InitCommand < BaseCommand
     def setup : Nil
       @name = "init"
-      @usage << "init [-c|--clean] [-f|--force] [--url <url>] [--key <key>]"
-      @description = "Initializes a new Aero config file"
+      @summary = @description = "Initializes a new Aero config file"
+      add_usage "init [-c|--clean] [-f|--force] [--url <url>] [--key <key>]"
 
-      add_option "clean", short: "c"
-      add_option "force", short: "f"
-      add_option "url", kind: :string
-      add_option "key", kind: :string
+      add_option 'c', "clean"
+      add_option 'f', "force"
+      add_option "url", has_value: true
+      add_option "key", has_value: true
     end
 
-    def execute(args, options) : Nil
+    def run(args, options) : Nil
       path = File.join Dir.current, ".aero.yml"
       if File.exists? path
         unless options.has? "force"
@@ -19,10 +19,12 @@ module Aerotitan::Commands
         end
       end
 
-      cfg = if options.has?("clean")
-        Config.new(options.get("url"), options.get("key")).to_yaml
+      url = options.get("url").try &.as_s
+      key = options.get("key").try &.as_s
+      cfg = if options.has? "clean"
+        Config.new(url, key).to_yaml
       else
-        Config.get_template options.get("url"), options.get("key")
+        Config.get_template url, key
       end
 
       begin
