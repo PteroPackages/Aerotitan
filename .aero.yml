@@ -1,0 +1,25 @@
+# The URL to your Pterodactyl panel
+# Make sure this is an absolute URL that does not include additional paths
+panel_url: https://ptero.garuda2703.com
+
+# The panel API key
+# This should be a CLIENT API KEY, not application API key
+panel_key: ptlc_cli3ntAp1Key
+
+# This is where you define the actions to execute
+# You can have as many as you want which will execute in the order you set it
+# Run 'aero actions --list' for more information
+actions:
+  - name: servers:restart
+    # identifiers of servers that take priority and bypass the query
+    priority:
+      - a52c5633
+
+    # servers that match the queries below will be included
+    query:
+      - server.egg == 4
+      - server.suspended == false
+
+    # a list of servers to ignore
+    ignore:
+      - 280e5b1d
