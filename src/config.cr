@@ -1,22 +1,19 @@
 module Aerotitan
   class Config
-    include YAML::Serializable
+    # PATH = File.join {% if flag?(:win32) %}ENV["APPDATA"]{% else %}"/etc"{% end %}, "aerotitan.cfg"
+    PATH = {% if flag?(:win32) %}File.join(ENV["APPDATA"], "aerotitan.cfg"){% else %}"/etc/aerotitan"{% end %}
 
-    property panel_url : String
-    property panel_key : String
-    property actions : Array(Action)
+    class_getter url : String = ""
+    class_getter key : String = ""
 
-    def initialize(panel_url : String?, panel_key : String?)
-      @panel_url = panel_url || "https://pterodactyl.test"
-      @panel_key = panel_key || "ptlc_cli3ntAp1Key"
-      @actions = [] of Action
+    def self.load(url : String?, key : String?) : Nil
+      url, key = File.read_lines PATH rescue ""
+      @@url = url || @@url
+      @@key = key || @@key
     end
 
-    def self.get_template(panel_url : String?, panel_key : String?) : String
-      panel_url ||= "https://pterodactyl.test"
-      panel_key ||= "ptlc_cli3ntAp1Key"
-
-      ECR.render "src/config.ecr"
+    def self.write(url : String?, key : String?) : Nil
+      File.write PATH, [url || @@url, key || @@key].join '\n'
     end
   end
 end

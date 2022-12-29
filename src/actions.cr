@@ -1,7 +1,5 @@
 module Aerotitan
   class Action
-    include YAML::Serializable
-
     KEYS = {
       # key => {can_use_query, requires_data}
       # "users:create" => {false, true},

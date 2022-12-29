@@ -2,7 +2,6 @@ require "cli"
 require "colorize"
 require "ecr/macros"
 require "json"
-require "yaml"
 
 require "./commands/*"
 require "./actions"
@@ -17,18 +16,12 @@ module Aerotitan
   VERSION = "0.1.0"
 
   class App < Commands::BaseCommand
-    def initialize
-      super
-
-      add_usage "aero <command> [arguments] [options]"
-
-      add_command Commands::InitCommand.new
-
-      add_option 'v', "version", desc: "get the current version"
-    end
-
     def setup : Nil
       @name = "aero"
+      add_usage "aero <command> [arguments] [options]"
+      add_option 'v', "version", desc: "get the current version"
+
+      add_command Commands::ConfigCommand.new
     end
 
     def run(args, options) : Nil
