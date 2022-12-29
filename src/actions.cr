@@ -4,11 +4,9 @@ module Aerotitan
 
     KEYS = {
       # key => {can_use_query, requires_data}
-      "users:select" => {true, false},
       # "users:create" => {false, true},
       # "users:update" => {true, true},
       "users:delete" => {true, false},
-      "servers:select" => {true, false},
       # "servers:create" => {true, true},
       # "servers:update" => {true, true},
       "servers:delete" => {true, false},
@@ -17,33 +15,20 @@ module Aerotitan
       "servers:reinstall" => {true, false}
     }
 
-    @name : String
-    @priority : Array(String) = [] of String
-    @query : Array(String) = [] of String
-    @ignore : Array(String) = [] of String
+    getter name : String
+    getter priority : Array(String)
+    getter query : Array(String)
+    getter ignore : Array(String)
 
-    def name
-      @name
+    def initialize(@name, priority : Array(String)? = nil, query : Array(String)? = nil, ignore : Array(String)? = nil)
+      raise "Invalid action '#{name}'" unless KEYS.has_key? @name
+
+      @priority = priority || [] of String
+      @query = query || [] of String
+      @ignore = ignore || [] of String
     end
 
-    def priority
-      @priority
-    end
-
-    def number_priority
-      @priority.map(&.to_i?).uniq
-    end
-
-    def query
-      @query
-    end
-
-    def ignore
-      @ignore
-    end
-
-    def number_ignore
-      @ignore.map(&.to_i?).uniq
+    def get_handler : Handler
     end
   end
 end
