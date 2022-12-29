@@ -11,10 +11,10 @@ module Aerotitan::Syntax
   end
 
   struct Token
-    property start  : Int32
-    property stop   : Int32
-    property kind   : Kind
-    property value  : String?
+    property start : Int32
+    property stop : Int32
+    property kind : Kind
+    property value : String?
 
     def initialize(@start)
       @stop = 0

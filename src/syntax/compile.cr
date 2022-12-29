@@ -57,13 +57,13 @@ module Aerotitan::Syntax
     {% begin %}
       case op.kind
       {% for kind, symbol in {
-        :Eq => "==",
-        :Neq => "!=",
-        :Lt => "<",
-        :Lte => "<=",
-        :Gt => ">",
-        :Gte => ">="
-      } %}
+                               :Eq  => "==",
+                               :Neq => "!=",
+                               :Lt  => "<",
+                               :Lte => "<=",
+                               :Gt  => ">",
+                               :Gte => ">=",
+                             } %}
       {% not_equality = !(kind == :Eq || kind == :Neq) %}
       when OpKind::{{ kind.id }}
         Context::Entry.new do |data|

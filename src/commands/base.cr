@@ -1,10 +1,10 @@
 module Aerotitan::Commands
   abstract class BaseCommand < CLI::Command
-    @inherit_options = true
-
     def initialize
       super
 
+      @inherit_options = true
+      add_option "no-color", desc: "disable ansi color codes"
       add_option 'h', "help", desc: "sends help information"
     end
 

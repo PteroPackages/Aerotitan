@@ -8,8 +8,8 @@ module Aerotitan::Syntax
       extend Default
     end
 
-    property start  : Int32
-    property stop   : Int32
+    property start : Int32
+    property stop : Int32
 
     def initialize(@start, @stop)
     end
@@ -66,8 +66,8 @@ module Aerotitan::Syntax
 
     def initialize(@start, @stop, value)
       case value
-      when "true"   then @value = true
-      when "false"  then @value = false
+      when "true"  then @value = true
+      when "false" then @value = false
       else
         raise "invalid boolean literal"
       end
