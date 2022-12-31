@@ -1,5 +1,5 @@
 module Aerotitan::Models
-  alias Info = Hash(String, Template::ValueRef.class)
+  alias Info = Hash(String, Template::Value.class)
 
   USER = {
     "user.2fa"         => Template::BoolLiteral,

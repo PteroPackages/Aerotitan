@@ -121,7 +121,7 @@ module Aerotitan::Template
     end
   end
 
-  alias ValueRef = Literal | Nullable
+  alias Value = Literal | Nullable
 
   struct Field < Literal
     getter value : String

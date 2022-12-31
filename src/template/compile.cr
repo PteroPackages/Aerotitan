@@ -42,7 +42,7 @@ module Aerotitan::Template
     end
   end
 
-  private def compare_values(kind : OpKind, left : ValueRef, right : ValueRef)
+  private def compare_values(kind : OpKind, left : Value, right : Value)
     case kind
     when OpKind::Eq, OpKind::Neq
       raise ComparisonError.new(kind, left, right) unless left.accepts? right
