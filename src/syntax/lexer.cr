@@ -1,16 +1,16 @@
 module Aerotitan::Syntax
-  enum Kind
-    Number
-    String
-    Bool
-    Null
-    Space
-    Ident
-    Operator
-    Eol
-  end
+  class Token
+    enum Kind
+      String
+      Number
+      Bool
+      Null
+      Space
+      Ident
+      Operator
+      Eol
+    end
 
-  struct Token
     property start : Int32
     property stop : Int32
     property kind : Kind
@@ -27,7 +27,7 @@ module Aerotitan::Syntax
   end
 
   class Lexer
-    VALID_OPERATORS = {'=', '!', '<', '>'}
+    OP_SYMBOLS = {'=', '!', '<', '>'}
 
     property reader : Char::Reader
     property token : Token
@@ -73,7 +73,7 @@ module Aerotitan::Syntax
         read_bool_or_ident
       when .ascii_alphanumeric?
         read_ident
-      when .in?(Lexer::VALID_OPERATORS)
+      when .in?(OP_SYMBOLS)
         read_operator
       else
         raise SyntaxError.new("Unexpected token '#{current_char}'", @token.start, @reader.pos)
@@ -170,7 +170,7 @@ module Aerotitan::Syntax
     def read_operator : Nil
       @token.kind = :operator
 
-      while current_char.in?(VALID_OPERATORS)
+      while current_char.in?(OP_SYMBOLS)
         next_char
       end
 

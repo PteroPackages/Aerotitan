@@ -33,7 +33,7 @@ module Aerotitan::Syntax
   end
 
   class Parser
-    VALID_OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
+    OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
 
     property tokens : Array(Token)
     property nodes : Array(Node)
@@ -62,21 +62,21 @@ module Aerotitan::Syntax
       node : Node
 
       case token.kind
-      in Kind::Number
+      in Token::Kind::Number
         if token.value!.ends_with? '.'
           raise SyntaxError.new("Invalid number literal", token.start, token.stop)
         end
 
         node = NumberLiteral.new token.start, token.stop, token.value!
-      in Kind::String
+      in Token::Kind::String
         node = StringLiteral.new token.start, token.stop, token.value!
-      in Kind::Bool
+      in Token::Kind::Bool
         node = BoolLiteral.new token.start, token.stop, token.value!
-      in Kind::Null
+      in Token::Kind::Null
         node = NullLiteral.new token.start, token.stop
-      in Kind::Space
+      in Token::Kind::Space
         return parse_node @tokens[@pos += 1]
-      in Kind::Ident
+      in Token::Kind::Ident
         if token.value!.ends_with?('.') || token.value!.ends_with?('_')
           raise SyntaxError.new("Invalid field name", token.start, token.stop)
         end
@@ -85,8 +85,8 @@ module Aerotitan::Syntax
         raise "Invalid field name" if split.any? &.blank?
 
         node = Field.new token.start, token.stop, token.value!
-      in Kind::Operator
-        unless token.value!.in?(Parser::VALID_OPERATORS)
+      in Token::Kind::Operator
+        unless token.value!.in?(OPERATORS)
           raise SyntaxError.new("Invalid operator '#{token.value!}'", token.start, token.stop)
         end
 
@@ -104,7 +104,7 @@ module Aerotitan::Syntax
         else
           raise SyntaxError.new("Missing left-side expression for operator", token.start, token.stop)
         end
-      in Kind::Eol
+      in Token::Kind::Eol
         raise SyntaxError.new("Unexpected End-Of-Line", token.start, token.stop)
       end
 

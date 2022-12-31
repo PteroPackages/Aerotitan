@@ -8,8 +8,8 @@ module Aerotitan::Syntax
       extend Default
     end
 
-    property start : Int32
-    property stop : Int32
+    getter start : Int32
+    getter stop : Int32
 
     def initialize(@start, @stop)
     end
@@ -23,7 +23,7 @@ module Aerotitan::Syntax
   end
 
   struct NumberLiteral < Literal
-    property value : Float64
+    getter value : Float64
 
     def initialize(@start, @stop, value)
       @value = value.to_f
@@ -43,7 +43,7 @@ module Aerotitan::Syntax
   end
 
   struct StringLiteral < Literal
-    property value : String
+    getter value : String
 
     def initialize(@start, @stop, @value)
     end
@@ -62,7 +62,7 @@ module Aerotitan::Syntax
   end
 
   struct BoolLiteral < Literal
-    property value : Bool
+    getter value : Bool
 
     def initialize(@start, @stop, value)
       case value
@@ -124,7 +124,7 @@ module Aerotitan::Syntax
   alias ValueRef = Literal | Nullable
 
   struct Field < Literal
-    property value : String
+    getter value : String
 
     def initialize(@start, @stop, @value)
     end
@@ -139,9 +139,9 @@ module Aerotitan::Syntax
   end
 
   struct Operator < Node
-    property kind : OpKind
-    property left : Literal
-    property right : Literal
+    getter kind : OpKind
+    getter left : Literal
+    getter right : Literal
 
     def initialize(@start, @stop, @kind, @left, @right)
     end
