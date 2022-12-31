@@ -10,7 +10,7 @@ require "./context"
 require "./errors"
 require "./log"
 require "./models"
-require "./syntax/*"
+require "./template/*"
 
 module Aerotitan
   VERSION = "0.1.0"

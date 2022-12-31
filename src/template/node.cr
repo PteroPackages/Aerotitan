@@ -1,4 +1,4 @@
-module Aerotitan::Syntax
+module Aerotitan::Template
   private module Default
     abstract def default
   end

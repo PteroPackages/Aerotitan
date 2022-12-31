@@ -1,18 +1,18 @@
 module Aerotitan::Models
-  alias Info = Hash(String, Syntax::ValueRef.class)
+  alias Info = Hash(String, Template::ValueRef.class)
 
   USER = {
-    "user.2fa"         => Syntax::BoolLiteral,
-    "user.created_at"  => Syntax::StringLiteral,
-    "user.email"       => Syntax::StringLiteral,
-    "user.external_id" => Syntax::NullableString,
-    "user.first_name"  => Syntax::StringLiteral,
-    "user.id"          => Syntax::NumberLiteral,
-    "user.language"    => Syntax::StringLiteral,
-    "user.last_name"   => Syntax::StringLiteral,
-    "user.root_admin"  => Syntax::BoolLiteral,
-    "user.updated_at"  => Syntax::NullableString,
-    "user.username"    => Syntax::StringLiteral,
-    "user.uuid"        => Syntax::StringLiteral,
+    "user.2fa"         => Template::BoolLiteral,
+    "user.created_at"  => Template::StringLiteral,
+    "user.email"       => Template::StringLiteral,
+    "user.external_id" => Template::NullableString,
+    "user.first_name"  => Template::StringLiteral,
+    "user.id"          => Template::NumberLiteral,
+    "user.language"    => Template::StringLiteral,
+    "user.last_name"   => Template::StringLiteral,
+    "user.root_admin"  => Template::BoolLiteral,
+    "user.updated_at"  => Template::NullableString,
+    "user.username"    => Template::StringLiteral,
+    "user.uuid"        => Template::StringLiteral,
   }.as(Info)
 end

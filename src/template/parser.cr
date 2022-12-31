@@ -1,4 +1,4 @@
-module Aerotitan::Syntax
+module Aerotitan::Template
   enum OpKind
     Eq
     Neq

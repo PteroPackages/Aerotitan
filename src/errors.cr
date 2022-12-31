@@ -12,7 +12,7 @@ module Aerotitan
     getter start : Int32
     getter stop : Int32
 
-    def initialize(kind : Syntax::OpKind, left : Syntax::ValueRef, right : Syntax::ValueRef)
+    def initialize(kind : Template::OpKind, left : Template::ValueRef, right : Template::ValueRef)
       @start = left.start
       @stop = right.stop
 

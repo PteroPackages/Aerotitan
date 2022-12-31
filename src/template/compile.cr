@@ -1,4 +1,4 @@
-module Aerotitan::Syntax
+module Aerotitan::Template
   extend self
 
   def compile(input : String, key : String, model : Models::Info) : Array(Context::Entry)

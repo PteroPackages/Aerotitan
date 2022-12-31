@@ -1,4 +1,4 @@
-module Aerotitan::Syntax
+module Aerotitan::Template
   class Token
     enum Kind
       String
