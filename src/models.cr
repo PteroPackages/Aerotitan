@@ -1,7 +1,7 @@
 module Aerotitan::Models
-  alias Info = Hash(String, Template::Value.class)
+  alias Fields = Hash(String, Template::Value.class)
 
-  USER = {
+  USER_FIELDS = {
     "user.2fa"         => Template::BoolLiteral,
     "user.created_at"  => Template::StringLiteral,
     "user.email"       => Template::StringLiteral,
@@ -14,5 +14,5 @@ module Aerotitan::Models
     "user.updated_at"  => Template::NullableString,
     "user.username"    => Template::StringLiteral,
     "user.uuid"        => Template::StringLiteral,
-  }.as(Info)
+  }.as Fields
 end

@@ -1,7 +1,7 @@
 module Aerotitan::Template
   extend self
 
-  def compile(input : String, key : String, model : Models::Info) : Array(Context::Entry)
+  def compile(input : String, key : String, model : Models::Fields) : Array(Context::Entry)
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
@@ -9,7 +9,7 @@ module Aerotitan::Template
     nodes.map { |n| create_entry(n) }
   end
 
-  private def validate_nodes(nodes : Array(Operator), key : String, model : Models::Info) : Nil
+  private def validate_nodes(nodes : Array(Operator), key : String, model : Models::Fields) : Nil
     nodes.each do |node|
       if node.left.is_a?(Field)
         field = node.left.value.as(String)
