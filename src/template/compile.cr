@@ -1,7 +1,16 @@
 module Aerotitan::Template
   extend self
 
-  def compile(input : String, key : String, model : Models::Fields) : Array(Context::Entry)
+  struct Result
+    def initialize(&@func : JSON::Any -> Bool)
+    end
+
+    def execute(data : JSON::Any) : Bool
+      @func.call data
+    end
+  end
+
+  def compile(input : String, key : String, model : Models::Fields) : Array(Result)
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
@@ -66,7 +75,7 @@ module Aerotitan::Template
                              } %}
       {% not_equality = !(kind == :Eq || kind == :Neq) %}
       when OpKind::{{ kind.id }}
-        Context::Entry.new do |data|
+        Result.new do |data|
           left = if op.left.is_a?(Field)
             names = op.left.value.as(String).split('.')[1..]
             walk(data, names){% if not_equality %}.as_i.to_f{% end %}
