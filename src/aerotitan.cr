@@ -1,12 +1,12 @@
 require "cli"
 require "colorize"
+require "crest"
 require "ecr/macros"
 require "json"
 
 require "./commands/*"
 require "./actions"
 require "./config"
-require "./context"
 require "./errors"
 require "./log"
 require "./models"
@@ -19,12 +19,12 @@ module Aerotitan
     def setup : Nil
       @name = "aero"
       add_usage "aero <command> [arguments] [options]"
-      add_option 'v', "version", desc: "get the current version"
+      add_option 'v', "version", description: "get the current version"
 
       add_command Commands::ConfigCommand.new
     end
 
-    def run(args, options) : Nil
+    def run(arguments, options) : Nil
       if options.has? "version"
         stdout.puts "Aerotitan v#{VERSION}"
       else

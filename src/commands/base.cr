@@ -4,11 +4,11 @@ module Aerotitan::Commands
       super
 
       @inherit_options = true
-      add_option "no-color", desc: "disable ansi color codes"
-      add_option 'h', "help", desc: "sends help information"
+      add_option "no-color", description: "disable ansi color codes"
+      add_option 'h', "help", description: "sends help information"
     end
 
-    def pre_run(args, options)
+    def pre_run(arguments, options)
       if options.has? "help"
         stdout.puts help_template
 

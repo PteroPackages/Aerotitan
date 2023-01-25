@@ -12,7 +12,7 @@ module Aerotitan::Commands
       add_command SetKeyCommand.new
     end
 
-    def run(args, options) : Nil
+    def run(arguments, options) : Nil
       url = Config.url.empty? ? "not set" : Config.url
       key = Config.key.empty? ? "not set" : Config.key
       Log.info ["url: #{url}", "key: #{key}"]
@@ -24,11 +24,11 @@ module Aerotitan::Commands
       @name = "set-url"
       @summary = "sets the panel url in the config"
 
-      add_argument "url", desc: "the panel url", required: true
+      add_argument "url", description: "the panel url", required: true
     end
 
-    def run(args, options) : Nil
-      Config.write args.get!("url").as_s, nil
+    def run(arguments, options) : Nil
+      Config.write arguments.get!("url").as_s, nil
     end
   end
 
@@ -37,11 +37,11 @@ module Aerotitan::Commands
       @name = "set-key"
       @summary = "sets the panel api key in the config"
 
-      add_argument "key", desc: "the panel api key", required: true
+      add_argument "key", description: "the panel api key", required: true
     end
 
-    def run(args, options) : Nil
-      Config.write nil, args.get!("key").as_s
+    def run(arguments, options) : Nil
+      Config.write nil, arguments.get!("key").as_s
     end
   end
 end

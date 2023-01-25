@@ -10,6 +10,10 @@ authors:
 dependencies:
   cli:
     github: devnote-dev/cli.cr
+    branch: main
+
+  crest:
+    github: mamantoha/crest
 
 targets:
   aerotitan:
