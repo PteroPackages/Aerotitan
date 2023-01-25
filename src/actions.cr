@@ -1,7 +1,10 @@
 module Aerotitan
   class Actions
     COMMANDS = [
-      "servers:power",
+      "servers:start",
+      "servers:restart",
+      "servers:stop",
+      "servers:kill",
       "servers:command",
       "servers:reinstall",
       "servers:suspend",
