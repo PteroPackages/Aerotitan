@@ -15,4 +15,22 @@ module Aerotitan::Models
     "user.username"    => Template::StringLiteral,
     "user.uuid"        => Template::StringLiteral,
   }.as Fields
+
+  SERVER_FIELDS = {
+    "server.id" => Template::NumberLiteral,
+    "server.external_id" => Template::NullableString,
+    "server.uuid" => Template::StringLiteral,
+    "server.identifier" => Template::StringLiteral,
+    "server.name" => Template::StringLiteral,
+    "server.description" => Template::NullableString,
+    "server.status" => Template::NullableString,
+    "server.suspended" => Template::BoolLiteral,
+    "server.user" => Template::NumberLiteral,
+    "server.node" => Template::NumberLiteral,
+    "server.allocation" => Template::NumberLiteral,
+    "server.nest" => Template::NumberLiteral,
+    "server.egg" => Template::NumberLiteral,
+    "server.created_at" => Template::StringLiteral,
+    "server.updated_at" => Template::NullableString
+  }.as Fields
 end

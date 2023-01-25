@@ -2,6 +2,7 @@ require "./aerotitan"
 
 begin
   Aerotitan::App.new.execute ARGV
-rescue ex
-  Aerotitan::Log.fatal ex
+# not helpful right now
+# rescue ex
+  # Aerotitan::Log.fatal ex
 end

@@ -22,6 +22,7 @@ module Aerotitan
       add_option 'v', "version", description: "get the current version"
 
       add_command Commands::ConfigCommand.new
+      add_command Commands::ExecCommand.new
 
       Config.load
     end
