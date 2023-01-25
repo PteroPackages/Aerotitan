@@ -22,6 +22,8 @@ module Aerotitan
       add_option 'v', "version", description: "get the current version"
 
       add_command Commands::ConfigCommand.new
+
+      Config.load
     end
 
     def run(arguments, options) : Nil
