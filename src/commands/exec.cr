@@ -21,7 +21,7 @@ module Aerotitan::Commands
       end
 
       ignore = options.get!("ignore").as_s.split ','
-      priority  = options.get!("priority").as_s.split ','
+      priority = options.get!("priority").as_s.split ','
       ignore.reject! &.in? priority
 
       actions = Actions.new Config.url, Config.key
@@ -36,7 +36,7 @@ module Aerotitan::Commands
 
       Log.fatal "No servers found matching the requirements" if servers.empty?
 
-      pp servers
+      # TODO
     end
   end
 end

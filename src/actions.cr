@@ -17,10 +17,10 @@ module Aerotitan
 
     def headers : Hash(String, String)
       {
-        "User-Agent" => "Aerotitan Client #{VERSION}",
+        "User-Agent"    => "Aerotitan Client #{VERSION}",
         "Authorization" => "Bearer #{@key}",
-        "Content-Type" => "application/json",
-        "Accept-Type" => "application/json"
+        "Content-Type"  => "application/json",
+        "Accept-Type"   => "application/json",
       }
     end
 
