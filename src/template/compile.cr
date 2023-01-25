@@ -62,7 +62,7 @@ module Aerotitan::Template
     end
   end
 
-  private def create_entry(op : Operator) : Context::Entry
+  private def create_entry(op : Operator) : Result
     {% begin %}
       case op.kind
       {% for kind, symbol in {
