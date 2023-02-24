@@ -21,9 +21,9 @@ describe Aerotitan::Template do
   describe "compile" do
     it "tests equality comparison" do
       entries = Aerotitan::Template.compile(
-      "user.external_id == null",
-      "user",
-      Aerotitan::Models::USER_FIELDS,
+        "user.external_id == null",
+        "user",
+        Aerotitan::Models::USER_FIELDS,
       )
 
       result = entries.map(&.execute(data)).first
