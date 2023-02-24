@@ -12,7 +12,9 @@ module Aero::Actions
     "servers:unsuspend",
   ]
 
-  @@client = Crest::Resource.new Config.url, headers: default_headers
+  private class_getter client : Crest::Resource do
+    Crest::Resource.new Config.url, headers: default_headers
+  end
 
   def default_headers : Hash(String, String)
     {
