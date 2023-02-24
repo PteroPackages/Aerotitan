@@ -1,8 +1,8 @@
-require "./aerotitan"
+require "./aero"
 
 begin
-  Aerotitan::App.new.execute ARGV
+  Aero::CLI.new.execute ARGV
   # not helpful right now
   # rescue ex
-  # Aerotitan::Log.fatal ex
+  # Aero::Log.fatal ex
 end

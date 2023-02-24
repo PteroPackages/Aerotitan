@@ -1,4 +1,4 @@
-module Aerotitan::Commands
+module Aero::Commands
   abstract class BaseCommand < Cling::Command
     def initialize
       super

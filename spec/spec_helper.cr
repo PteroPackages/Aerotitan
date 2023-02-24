@@ -1,3 +1,3 @@
 require "json"
 require "spec"
-require "../src/aerotitan"
+require "../src/aero"

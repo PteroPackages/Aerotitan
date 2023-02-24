@@ -1,8 +1,8 @@
-name: aerotitan
+name: aero
 # description:
 version: 0.1.0
 crystal: 1.5.0
-repository: https://github.com/PteroPackages/Aerotitan
+repository: https://github.com/PteroPackages/Aero
 
 authors:
   - Devonte W <https://github.com/devnote-dev>
@@ -16,7 +16,7 @@ dependencies:
     github: mamantoha/crest
 
 targets:
-  aerotitan:
+  aero:
     main: src/main.cr
 
 license: MIT

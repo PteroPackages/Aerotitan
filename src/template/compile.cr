@@ -1,4 +1,4 @@
-module Aerotitan::Template
+module Aero::Template
   extend self
 
   struct Result

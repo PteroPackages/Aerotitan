@@ -1,4 +1,4 @@
-module Aerotitan
+module Aero
   class Config
     PATH = {% if flag?(:win32) %}File.join(ENV["APPDATA"], "aero.cfg"){% else %}"/usr/lib/aero.cfg"{% end %}
 

@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe Aerotitan::Template do
+describe Aero::Template do
   data = JSON.parse <<-JSON
     {
       "2fa": false,
@@ -20,10 +20,10 @@ describe Aerotitan::Template do
 
   describe "compile" do
     it "tests equality comparison" do
-      entries = Aerotitan::Template.compile(
+      entries = Aero::Template.compile(
         "user.external_id == null",
         "user",
-        Aerotitan::Models::USER_FIELDS,
+        Aero::Models::USER_FIELDS,
       )
 
       result = entries.map(&.execute(data)).first
@@ -31,10 +31,10 @@ describe Aerotitan::Template do
     end
 
     it "tests inequality comparison" do
-      entries = Aerotitan::Template.compile(
+      entries = Aero::Template.compile(
         %(user.first_name != "user"),
         "user",
-        Aerotitan::Models::USER_FIELDS,
+        Aero::Models::USER_FIELDS,
       )
 
       result = entries.map(&.execute(data)).first
@@ -42,10 +42,10 @@ describe Aerotitan::Template do
     end
 
     it "tests greater than comparison" do
-      entries = Aerotitan::Template.compile(
+      entries = Aero::Template.compile(
         "user.id > 2",
         "user",
-        Aerotitan::Models::USER_FIELDS,
+        Aero::Models::USER_FIELDS,
       )
 
       result = entries.map(&.execute(data)).first
@@ -53,10 +53,10 @@ describe Aerotitan::Template do
     end
 
     it "tests less than comparison" do
-      entries = Aerotitan::Template.compile(
+      entries = Aero::Template.compile(
         "user.id < 5",
         "user",
-        Aerotitan::Models::USER_FIELDS,
+        Aero::Models::USER_FIELDS,
       )
 
       result = entries.map(&.execute(data)).first
@@ -64,21 +64,21 @@ describe Aerotitan::Template do
     end
 
     it "fails for invalid syntax" do
-      expect_raises Aerotitan::SyntaxError do
-        Aerotitan::Template.compile(
+      expect_raises Aero::SyntaxError do
+        Aero::Template.compile(
           "user.id & 10",
           "user",
-          Aerotitan::Models::USER_FIELDS,
+          Aero::Models::USER_FIELDS,
         )
       end
     end
 
     it "fails for invalid comparison" do
-      expect_raises Aerotitan::ComparisonError do
-        Aerotitan::Template.compile(
+      expect_raises Aero::ComparisonError do
+        Aero::Template.compile(
           "user.first_name > 10",
           "user",
-          Aerotitan::Models::USER_FIELDS,
+          Aero::Models::USER_FIELDS,
         )
       end
     end

@@ -1,6 +1,6 @@
 Colorize.on_tty_only!
 
-module Aerotitan::Log
+module Aero::Log
   def self.info(msg : String) : Nil
     STDOUT.puts msg
   end

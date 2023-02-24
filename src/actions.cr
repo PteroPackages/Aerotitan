@@ -1,4 +1,4 @@
-module Aerotitan::Actions
+module Aero::Actions
   extend self
 
   COMMANDS = [

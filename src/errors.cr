@@ -1,4 +1,4 @@
-module Aerotitan
+module Aero
   class SyntaxError < Exception
     getter start : Int32
     getter stop : Int32

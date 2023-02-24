@@ -1,4 +1,4 @@
-module Aerotitan::Models
+module Aero::Models
   alias Fields = Hash(String, Template::Value.class)
 
   USER_FIELDS = {

@@ -1,4 +1,4 @@
-module Aerotitan::Commands
+module Aero::Commands
   class ConfigCommand < BaseCommand
     def setup : Nil
       @name = "config"

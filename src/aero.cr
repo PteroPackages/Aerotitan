@@ -12,10 +12,10 @@ require "./log"
 require "./models"
 require "./template/*"
 
-module Aerotitan
+module Aero
   VERSION = "0.1.0"
 
-  class App < Commands::BaseCommand
+  class CLI < Commands::BaseCommand
     def setup : Nil
       @name = "aero"
       add_usage "aero <command> [arguments] [options]"
@@ -29,7 +29,7 @@ module Aerotitan
 
     def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
       if options.has? "version"
-        stdout.puts "Aerotitan v#{VERSION}"
+        stdout.puts "Aero v#{VERSION}"
       else
         stdout.puts help_template
       end
