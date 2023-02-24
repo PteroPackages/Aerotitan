@@ -1,47 +1,46 @@
-module Aerotitan
-  class Actions
-    COMMANDS = [
-      "servers:start",
-      "servers:restart",
-      "servers:stop",
-      "servers:kill",
-      "servers:command",
-      "servers:reinstall",
-      "servers:suspend",
-      "servers:unsuspend",
-    ]
+module Aerotitan::Actions
+  extend self
 
-    def initialize(@url : String, @key : String)
-      @client = Crest::Resource.new @url, headers: headers
-    end
+  COMMANDS = [
+    "servers:start",
+    "servers:restart",
+    "servers:stop",
+    "servers:kill",
+    "servers:command",
+    "servers:reinstall",
+    "servers:suspend",
+    "servers:unsuspend",
+  ]
 
-    def headers : Hash(String, String)
-      {
-        "User-Agent"    => "Aerotitan Client #{VERSION}",
-        "Authorization" => "Bearer #{@key}",
-        "Content-Type"  => "application/json",
-        "Accept-Type"   => "application/json",
-      }
-    end
+  @@client = Crest::Resource.new Config.url, headers: default_headers
 
-    def get_all_servers : Array(JSON::Any)
-      res = @client.get "/api/application/servers"
-      obj = JSON.parse res.body
-      data = obj["data"].as_a.map &.["attributes"]
-      total = obj["meta"]["pagination"]["total"].as_i
+  def default_headers : Hash(String, String)
+    {
+      "User-Agent"    => "Aero Client #{VERSION}",
+      "Authorization" => "Bearer #{Config.key}",
+      "Content-Type"  => "application/json",
+      "Accept-Type"   => "application/json",
+    }
+  end
 
-      if total > 1
-        (2..total).each do |i|
-          res = @client.get "/api/application/servers?page=#{i}", headers: headers
-          obj = JSON.parse(res.body)["data"].as_a.map &.["attributes"]
-          data += obj
-        end
+  private def get_all(route : String) : Array(JSON::Any)
+    response = @@client.get route
+    objects = JSON.parse response.body
+    data = objects["data"].as_a.map &.["attributes"]
+    total = objects["meta"]["pagination"]["total"].as_i
+
+    if total > 1
+      (2..total).each do |page|
+        response = @@client.get(route + "?page=#{page}")
+        objects = JSON.parse(response.body)["data"].as_a.map &.["attributes"]
+        data += objects
       end
-
-      data
     end
 
-    def send_server_power(target : Array(String), ignore : Array(String))
-    end
+    data
+  end
+
+  def get_all_servers : Array(JSON::Any)
+    get_all "/api/application/servers"
   end
 end
