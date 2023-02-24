@@ -17,6 +17,6 @@ dependencies:
 
 targets:
   aerotitan:
-    main: src/aerotitan.cr
+    main: src/main.cr
 
 license: MIT
