@@ -34,13 +34,14 @@ module Aero::Commands
       # rescue ComparisonError
     end
 
-    private def handle_server_power(ignore : Array(String), priority : Array(String), query : String?) : Nil
+    private def handle_server_power(ignore : Array(String), priority : Array(String),
+                                    query : String?) : Nil
       servers = Actions.get_all_servers
       servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
 
       unless query.nil?
-        results = Template.compile query, "server", Models::SERVER_FIELDS
-        servers.select! { |s| results.any? &.execute(s) }
+        result = Template.compile query, "server", Models::SERVER_FIELDS
+        servers.select! { |s| result.execute(s) }
       end
 
       Log.fatal "No servers found matching the requirements" if servers.empty?

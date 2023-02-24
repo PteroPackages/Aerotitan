@@ -20,47 +20,43 @@ describe Aero::Template do
 
   describe "compile" do
     it "tests equality comparison" do
-      entries = Aero::Template.compile(
+      result = Aero::Template.compile(
         "user.external_id == null",
         "user",
         Aero::Models::USER_FIELDS,
       )
 
-      result = entries.map(&.execute(data)).first
-      result.should be_true
+      result.execute(data).should be_true
     end
 
     it "tests inequality comparison" do
-      entries = Aero::Template.compile(
+      result = Aero::Template.compile(
         %(user.first_name != "user"),
         "user",
         Aero::Models::USER_FIELDS,
       )
 
-      result = entries.map(&.execute(data)).first
-      result.should be_true
+      result.execute(data).should be_true
     end
 
     it "tests greater than comparison" do
-      entries = Aero::Template.compile(
+      result = Aero::Template.compile(
         "user.id > 2",
         "user",
         Aero::Models::USER_FIELDS,
       )
 
-      result = entries.map(&.execute(data)).first
-      result.should be_true
+      result.execute(data).should be_true
     end
 
     it "tests less than comparison" do
-      entries = Aero::Template.compile(
+      result = Aero::Template.compile(
         "user.id < 5",
         "user",
         Aero::Models::USER_FIELDS,
       )
 
-      result = entries.map(&.execute(data)).first
-      result.should be_false
+      result.execute(data).should be_false
     end
 
     it "fails for invalid syntax" do

@@ -2,20 +2,20 @@ module Aero::Template
   extend self
 
   struct Result
-    def initialize(&@func : JSON::Any -> Bool)
+    def initialize(@procs : Array(JSON::Any -> Bool))
     end
 
     def execute(data : JSON::Any) : Bool
-      @func.call data
+      @procs.all? &.call(data)
     end
   end
 
-  def compile(input : String, key : String, model : Models::Fields) : Array(Result)
+  def compile(input : String, key : String, model : Models::Fields) : Result
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
     validate_nodes nodes, key, model
-    nodes.map { |n| create_entry(n) }
+    Result.new nodes.map { |n| create_result_proc(n) }
   end
 
   private def validate_nodes(nodes : Array(Operator), key : String, model : Models::Fields) : Nil
@@ -62,7 +62,7 @@ module Aero::Template
     end
   end
 
-  private def create_entry(op : Operator) : Result
+  private def create_result_proc(op : Operator) : JSON::Any -> Bool
     {% begin %}
       case op.kind
       {% for kind, symbol in {
@@ -75,7 +75,7 @@ module Aero::Template
                              } %}
       {% not_equality = !(kind == :Eq || kind == :Neq) %}
       when OpKind::{{ kind.id }}
-        Result.new do |data|
+        ->(data : JSON::Any) : Bool do
           left = if op.left.is_a?(Field)
             names = op.left.value.as(String).split('.')[1..]
             walk(data, names){% if not_equality %}.as_i.to_f{% end %}
@@ -107,6 +107,6 @@ module Aero::Template
         return val
       end
     end
-    data # unreachable
+    raise "unreachable"
   end
 end
