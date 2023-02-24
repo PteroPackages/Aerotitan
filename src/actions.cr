@@ -26,14 +26,14 @@ module Aero::Actions
   end
 
   private def get_all(route : String) : Array(JSON::Any)
-    response = @@client.get route
+    response = client.get route
     objects = JSON.parse response.body
     data = objects["data"].as_a.map &.["attributes"]
     total = objects["meta"]["pagination"]["total"].as_i
 
     if total > 1
       (2..total).each do |page|
-        response = @@client.get(route + "?page=#{page}")
+        response = client.get(route + "?page=#{page}")
         objects = JSON.parse(response.body)["data"].as_a.map &.["attributes"]
         data += objects
       end
