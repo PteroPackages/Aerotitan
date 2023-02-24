@@ -8,8 +8,8 @@ authors:
   - Devonte W <https://github.com/devnote-dev>
 
 dependencies:
-  cli:
-    github: devnote-dev/cli.cr
+  cling:
+    github: devnote-dev/cling
     branch: main
 
   crest:

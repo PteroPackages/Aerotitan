@@ -12,7 +12,7 @@ module Aerotitan::Commands
       add_command SetKeyCommand.new
     end
 
-    def run(arguments, options) : Nil
+    def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
       url = Config.url.empty? ? "not set" : Config.url
       key = Config.key.empty? ? "not set" : Config.key
       Log.info ["url: #{url}", "key: #{key}"]
@@ -27,8 +27,8 @@ module Aerotitan::Commands
       add_argument "url", description: "the panel url", required: true
     end
 
-    def run(arguments, options) : Nil
-      Config.write arguments.get!("url").as_s, nil
+    def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
+      Config.write arguments.get("url").as_s, nil
     end
   end
 
@@ -40,8 +40,8 @@ module Aerotitan::Commands
       add_argument "key", description: "the panel api key", required: true
     end
 
-    def run(arguments, options) : Nil
-      Config.write nil, arguments.get!("key").as_s
+    def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
+      Config.write nil, arguments.get("key").as_s
     end
   end
 end

@@ -2,17 +2,16 @@ module Aerotitan::Commands
   class ExecCommand < BaseCommand
     def setup : Nil
       @name = "exec"
-
       add_usage "exec <action> [-i|--ignore <...>] [-p|--priority <...>] [-q|--query <str>]"
 
       add_argument "action", required: true
-      add_option 'i', "ignore", has_value: true, default: ""
-      add_option 'p', "priority", has_value: true, default: ""
-      add_option 'q', "query", has_value: true
+      add_option 'i', "ignore", type: :single, default: ""
+      add_option 'p', "priority", type: :single, default: ""
+      add_option 'q', "query", type: :single
     end
 
-    def run(arguments, options) : Nil
-      action = arguments.get!("action").as_s
+    def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
+      action = arguments.get("action").as_s
 
       unless Actions::COMMANDS.includes? action
         Log.error "Invalid action '#{action}'"
@@ -20,8 +19,8 @@ module Aerotitan::Commands
         exit 1
       end
 
-      ignore = options.get!("ignore").as_s.split ','
-      priority = options.get!("priority").as_s.split ','
+      ignore = options.get("ignore").as_s.split ','
+      priority = options.get("priority").as_s.split ','
       ignore.reject! &.in? priority
 
       actions = Actions.new Config.url, Config.key

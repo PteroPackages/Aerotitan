@@ -1,5 +1,5 @@
 module Aerotitan::Commands
-  abstract class BaseCommand < CLI::Command
+  abstract class BaseCommand < Cling::Command
     def initialize
       super
 
@@ -8,7 +8,7 @@ module Aerotitan::Commands
       add_option 'h', "help", description: "sends help information"
     end
 
-    def pre_run(arguments, options)
+    def pre_run(arguments : Cling::Arguments, options : Cling::Options) : Bool
       if options.has? "help"
         stdout.puts help_template
 

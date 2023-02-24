@@ -1,4 +1,4 @@
-require "cli"
+require "cling"
 require "colorize"
 require "crest"
 require "ecr/macros"
@@ -27,7 +27,7 @@ module Aerotitan
       Config.load
     end
 
-    def run(arguments, options) : Nil
+    def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
       if options.has? "version"
         stdout.puts "Aerotitan v#{VERSION}"
       else
