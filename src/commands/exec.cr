@@ -21,20 +21,29 @@ module Aerotitan::Commands
 
       ignore = options.get("ignore").as_a
       priority = options.get("priority").as_a
+      query = options.get?("query").try &.as_s
       ignore.reject! &.in? priority
 
-      actions = Actions.new Config.url, Config.key
-      servers = actions.get_all_servers
+      case action
+      when "servers:start", "servers:stop", "servers:restart", "servers:kill"
+        handle_server_power ignore, priority, query
+      end
+
+      # TODO:
+      # rescue SyntaxError
+      # rescue ComparisonError
+    end
+
+    private def handle_server_power(ignore : Array(String), priority : Array(String), query : String?) : Nil
+      servers = Actions.get_all_servers
       servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
 
-      if query = options.get?("query").try &.as_s
+      unless query.nil?
         results = Template.compile query, "server", Models::SERVER_FIELDS
         servers.select! { |s| results.any? &.execute(s) }
       end
 
       Log.fatal "No servers found matching the requirements" if servers.empty?
-
-      # TODO
     end
   end
 end
