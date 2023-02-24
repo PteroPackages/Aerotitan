@@ -7,7 +7,7 @@ module Aerotitan::Commands
       add_argument "action", required: true
       add_option 'i', "ignore", type: :single, default: ""
       add_option 'p', "priority", type: :single, default: ""
-      add_option 'q', "query", type: :single
+      add_option 'q', "query", type: :single, default: ""
     end
 
     def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
@@ -24,11 +24,10 @@ module Aerotitan::Commands
       ignore.reject! &.in? priority
 
       actions = Actions.new Config.url, Config.key
-      servers = actions
-        .get_all_servers
-        .reject { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
+      servers = actions.get_all_servers
+      servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
 
-      if query = arguments.get("query").try &.as_s
+      if query = options.get("query").try &.as_s
         results = Template.compile query, "server", Models::SERVER_FIELDS
         servers.select! { |s| results.any? &.execute(s) }
       end
