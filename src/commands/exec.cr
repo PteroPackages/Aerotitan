@@ -28,10 +28,27 @@ module Aero::Commands
       when "servers:start", "servers:stop", "servers:restart", "servers:kill"
         handle_server_power ignore, priority, query, action[8...]
       end
+    rescue ex : ComparisonError
+      format_error ex, query.not_nil!
+    rescue ex : SyntaxError
+      format_error ex, query.not_nil!
+    end
 
-      # TODO:
-      # rescue SyntaxError
-      # rescue ComparisonError
+    private def format_error(ex : ComparisonError | SyntaxError, query : String) : Nil
+      border = "|".colorize.red.to_s
+      padding = " " * query[...ex.start].size
+      width = ex.stop - ex.start + (ex.is_a?(SyntaxError) ? 1 : 0)
+      message = "Failed to #{ex.is_a?(ComparisonError) ? "evaluate" : "parse"} query syntax"
+
+      put_error %(#{message} (column #{ex.start}#{" to #{ex.stop}" unless ex.start == ex.stop}))
+      put_error [
+        "",
+        "#{border} #{query}",
+        %(#{border} #{padding}#{"^".colorize.yellow.to_s * width}),
+        "#{border} #{ex}",
+        "",
+        "See 'aero help query' for more information",
+      ]
     end
 
     private def handle_server_power(ignore : Array(String), priority : Array(String),

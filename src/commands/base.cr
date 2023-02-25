@@ -27,7 +27,7 @@ module Aero::Commands
     end
 
     def put_warn(data : String) : Nil
-      stdout.puts "Warn ".colorize.yellow.to_s + data
+      stdout.puts "#{"Warn ".colorize.yellow} #{data}"
     end
 
     def put_warn(data : Array(String)) : Nil
@@ -39,11 +39,11 @@ module Aero::Commands
     end
 
     def put_error(ex : Exception) : Nil
-      error ex.message || ex.backtrace.try(&.first) || "unknown error"
+      error ex.message || ex.to_s
     end
 
     def put_error(data : Array(String | Exception)) : Nil
-      data.map { |d| error d }
+      data.map { |d| put_error d }
     end
   end
 end
