@@ -17,5 +17,33 @@ module Aero::Commands
         true
       end
     end
+
+    def put_info(data : String) : Nil
+      stdout.puts data
+    end
+
+    def put_info(data : Array(String)) : Nil
+      data.map { |d| stdout.puts d }
+    end
+
+    def put_warn(data : String) : Nil
+      stdout.puts "Warn ".colorize.yellow.to_s + data
+    end
+
+    def put_warn(data : Array(String)) : Nil
+      data.map { |d| warn d }
+    end
+
+    def put_error(data : String) : Nil
+      stderr.puts "#{"Error".colorize.red} #{data}"
+    end
+
+    def put_error(ex : Exception) : Nil
+      error ex.message || ex.backtrace.try(&.first) || "unknown error"
+    end
+
+    def put_error(data : Array(String | Exception)) : Nil
+      data.map { |d| error d }
+    end
   end
 end

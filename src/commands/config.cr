@@ -15,7 +15,7 @@ module Aero::Commands
     def run(arguments : Cling::Arguments, options : Cling::Options) : Nil
       url = Config.url.empty? ? "not set" : Config.url
       key = Config.key.empty? ? "not set" : Config.key
-      Log.info ["url: #{url}", "key: #{key}"]
+      put_info ["url: #{url}", "key: #{key}"]
     end
   end
 

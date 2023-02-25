@@ -8,9 +8,10 @@ require "./commands/*"
 require "./actions"
 require "./config"
 require "./errors"
-require "./log"
 require "./models"
 require "./template/*"
+
+Colorize.on_tty_only!
 
 module Aero
   VERSION = "0.1.0"
