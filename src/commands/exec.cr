@@ -26,7 +26,7 @@ module Aero::Commands
 
       case action
       when "servers:start", "servers:stop", "servers:restart", "servers:kill"
-        handle_server_power ignore, priority, query
+        handle_server_power ignore, priority, query, action[8...]
       end
 
       # TODO:
@@ -35,7 +35,7 @@ module Aero::Commands
     end
 
     private def handle_server_power(ignore : Array(String), priority : Array(String),
-                                    query : String?) : Nil
+                                    query : String?, action : String) : Nil
       servers = Actions.get_all_servers
       servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
 
@@ -45,6 +45,11 @@ module Aero::Commands
       end
 
       Log.fatal "No servers found matching the requirements" if servers.empty?
+
+      servers.each do |server|
+        Log.info "Sending action #{action} to #{server["identifier"]}"
+        Actions.send_server_power server["identifer"].as_s, action
+      end
     end
   end
 end

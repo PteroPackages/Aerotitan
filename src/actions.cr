@@ -45,4 +45,8 @@ module Aero::Actions
   def get_all_servers : Array(JSON::Any)
     get_all "/api/application/servers"
   end
+
+  def send_server_power(id : String, signal : String) : Nil
+    client.post "/api/client/servers/#{id}/power", {"signal" => signal}
+  end
 end
