@@ -24,11 +24,11 @@ module Aero::Template
         field = node.left.value.as(String)
 
         unless field.starts_with? key
-          raise SyntaxError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
+          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
         end
 
         unless model.has_key? field
-          raise SyntaxError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
+          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
         end
       end
 
@@ -36,11 +36,11 @@ module Aero::Template
         field = node.right.value.as(String)
 
         unless field.starts_with? key
-          raise SyntaxError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
+          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
         end
 
         unless model.has_key? field
-          raise SyntaxError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
+          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
         end
       end
 

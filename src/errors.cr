@@ -1,22 +1,21 @@
 module Aero
-  class SyntaxError < Exception
+  class TemplateError < Exception
     getter start : Int32
     getter stop : Int32
 
-    def initialize(message : String, @start : Int32, @stop : Int32)
-      super message
+    def initialize(@message : String, @start : Int32, @stop : Int32)
     end
   end
 
-  class ComparisonError < Exception
-    getter start : Int32
-    getter stop : Int32
-
+  class ComparisonError < TemplateError
     def initialize(kind : Template::OpKind, left : Template::Value, right : Template::Value)
-      @start = left.start
-      @stop = right.stop
-
-      super "Cannot compare #{kind} with types #{left} and #{right}"
+      super "Cannot compare #{kind.name} (#{kind}) with types #{left} and #{right}", left.start, right.stop
     end
+  end
+
+  class FieldError < TemplateError
+  end
+
+  class SyntaxError < TemplateError
   end
 end

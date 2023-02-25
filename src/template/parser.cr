@@ -30,6 +30,17 @@ module Aero::Template
       in OpKind::Gte then ">="
       end
     end
+
+    def name : String
+      case self
+      in OpKind::Eq  then "equal"
+      in OpKind::Neq then "not equal"
+      in OpKind::Lt  then "less than"
+      in OpKind::Lte then "less than or equal"
+      in OpKind::Gt  then "greater than"
+      in OpKind::Gte then "greater than or equal"
+      end
+    end
   end
 
   class Parser
@@ -78,11 +89,11 @@ module Aero::Template
         return parse_node @tokens[@pos += 1]
       in Token::Kind::Ident
         if token.value!.ends_with?('.') || token.value!.ends_with?('_')
-          raise SyntaxError.new("Invalid field name", token.start, token.stop)
+          raise FieldError.new("Invalid field name", token.start, token.stop)
         end
 
         split = token.value!.split '.'
-        raise "Invalid field name" if split.any? &.blank?
+        raise FieldError.new("Invalid field name", token.start, token.stop) if split.any? &.blank?
 
         node = Field.new token.start, token.stop, token.value!
       in Token::Kind::Operator
