@@ -29,31 +29,7 @@ module Aero::Commands
         handle_server_power ignore, priority, query, action[8...]
       end
     rescue ex : TemplateError
-      format_error ex, query.not_nil!
-    end
-
-    private def format_error(ex : TemplateError, query : String) : Nil
-      border = "|".colorize.red.to_s
-      padding = " " * query[...ex.start].size
-      width = ex.stop - ex.start + (ex.is_a?(SyntaxError) ? 1 : 0)
-      message = case ex
-                when ComparisonError
-                  "Failed to evaluate query input"
-                when FieldError
-                  "Failed to interpret query input"
-                when SyntaxError
-                  "Failed to parse query input"
-                end
-
-      put_error %(#{message} (column #{ex.start}#{" to #{ex.stop}" unless ex.start == ex.stop}))
-      put_error [
-        "",
-        "#{border} #{query}",
-        %(#{border} #{padding}#{"^".colorize.yellow.to_s * width}),
-        "#{border} #{ex}",
-        "",
-        "See 'aero help query' for more information",
-      ]
+      format_template_error ex, query.not_nil!
     end
 
     private def handle_server_power(ignore : Array(String), priority : Array(String),

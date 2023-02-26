@@ -45,5 +45,29 @@ module Aero::Commands
     def put_error(data : Array(String | Exception)) : Nil
       data.map { |d| put_error d }
     end
+
+    def format_template_error(ex : TemplateError, query : String) : Nil
+      border = "|".colorize.red.to_s
+      padding = " " * query[...ex.start].size
+      width = ex.stop - ex.start + (ex.is_a?(SyntaxError) ? 1 : 0)
+      message = case ex
+                when ComparisonError
+                  "Failed to evaluate query input"
+                when FieldError
+                  "Failed to interpret query input"
+                when SyntaxError
+                  "Failed to parse query input"
+                end
+
+      put_error %(#{message} (column #{ex.start}#{" to #{ex.stop}" unless ex.start == ex.stop}))
+      put_error [
+        "",
+        "#{border} #{query}",
+        %(#{border} #{padding}#{"^".colorize.yellow.to_s * width}),
+        "#{border} #{ex}",
+        "",
+        "See 'aero help query' for more information",
+      ]
+    end
   end
 end
