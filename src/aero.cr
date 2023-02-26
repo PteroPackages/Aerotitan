@@ -24,6 +24,7 @@ module Aero
 
       add_command Commands::ConfigCommand.new
       add_command Commands::ExecCommand.new
+      add_command Commands::TestCommand.new
 
       Config.load
     end
