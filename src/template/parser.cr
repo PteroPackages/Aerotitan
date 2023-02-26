@@ -44,7 +44,8 @@ module Aero::Template
   end
 
   class Parser
-    OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
+    VALID_OPERATORS = {"==", "!=", "<", "<=", ">", ">="}
+    OTHER_OPERATORS = {"+", "++", "-", "--", "*", "**", "/", "//", "^", "%"}
 
     property tokens : Array(Token)
     property nodes : Array(Node)
@@ -97,17 +98,21 @@ module Aero::Template
 
         node = Field.new token.start, token.stop, token.value!
       in Token::Kind::Operator
-        unless token.value!.in?(OPERATORS)
+        unless token.value!.in? VALID_OPERATORS
+          if token.value!.in? OTHER_OPERATORS
+            raise SyntaxError.new("Cannot do arithmetic operations yet", token.start, token.stop)
+          end
+
           raise SyntaxError.new("Invalid operator '#{token.value!}'", token.start, token.stop)
         end
 
         if left = previous_node
-          unless left.is_a?(Literal)
+          unless left.is_a? Literal
             raise SyntaxError.new("Cannot use type #{left} for left-side expression", token.start, token.stop)
           end
 
           right = parse_node @tokens[@pos + 1]
-          unless right.is_a?(Literal)
+          unless right.is_a? Literal
             raise SyntaxError.new("Cannot use type #{right} for right-side expression", token.start, token.stop)
           end
 

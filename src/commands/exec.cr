@@ -58,13 +58,10 @@ module Aero::Commands
 
     private def handle_server_power(ignore : Array(String), priority : Array(String),
                                     query : String?, action : String) : Nil
+      result = Template.compile query, "server", Models::SERVER_FIELDS
       servers = Actions.get_all_servers
       servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
-
-      unless query.nil?
-        result = Template.compile query, "server", Models::SERVER_FIELDS
-        servers.select! { |s| result.execute(s) }
-      end
+      servers.select! { |s| result.execute(s) } if result.value?
 
       put_error "No servers found matching the requirements" if servers.empty?
 

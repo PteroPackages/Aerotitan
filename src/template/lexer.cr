@@ -27,7 +27,7 @@ module Aero::Template
   end
 
   class Lexer
-    OP_SYMBOLS = {'=', '!', '<', '>'}
+    OP_SYMBOLS = {'+', '-', '*', '/', '^', '%', '=', '!', '<', '>'}
 
     property reader : Char::Reader
     property token : Token

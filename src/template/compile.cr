@@ -2,7 +2,14 @@ module Aero::Template
   extend self
 
   struct Result
+    getter value? : Bool
+
     def initialize(@procs : Array(JSON::Any -> Bool))
+      @value = true
+    end
+
+    def initialize(@value : Bool)
+      @procs = [] of JSON::Any -> Bool
     end
 
     def execute(data : JSON::Any) : Bool
@@ -10,7 +17,9 @@ module Aero::Template
     end
   end
 
-  def compile(input : String, key : String, model : Models::Fields) : Result
+  def compile(input : String?, key : String, model : Models::Fields) : Result
+    return Result.new(false) unless input
+
     tokens = Lexer.new(input).run
     nodes = Parser.new(tokens).run.select(Operator)
 
