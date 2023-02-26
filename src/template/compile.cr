@@ -2,7 +2,7 @@ module Aero::Template
   extend self
 
   struct Result
-    getter value? : Bool
+    getter? value : Bool
 
     def initialize(@procs : Array(JSON::Any -> Bool))
       @value = true
