@@ -14,9 +14,9 @@ module Aero::Commands
       action = arguments.get("action").as_s
 
       unless Actions::COMMANDS.includes? action
-        put_error "Invalid action '#{action}'"
-        put_info ["Valid Actions:"] + Actions::COMMANDS
-        exit 1
+        error "Invalid action '#{action}'"
+        info ["Valid Actions:"] + Actions::COMMANDS
+        system_exit
       end
 
       ignore = options.get("ignore").as_a
@@ -39,10 +39,13 @@ module Aero::Commands
       servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
       servers.select! { |s| result.execute(s) } if result.value?
 
-      put_error "No servers found matching the requirements" if servers.empty?
+      if servers.empty?
+        error "No servers found matching the requirements"
+        system_exit
+      end
 
       servers.each do |server|
-        put_info "Sending action #{action} to #{server["identifier"]}"
+        info "Sending action #{action} to #{server["identifier"]}"
         Actions.send_server_power server["identifer"].as_s, action
       end
     end

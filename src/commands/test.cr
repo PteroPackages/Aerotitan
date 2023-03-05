@@ -18,30 +18,29 @@ module Aero::Commands
                when input.includes?("server")
                  "server"
                else
-                 put_error [
+                 error [
                    "Cannot identify query target",
                    "Consider using the '--target' flag with this command",
                  ]
-                 return
+                 system_exit
                end
 
       fields = case target
                when "user"   then Models::USER_FIELDS
                when "server" then Models::SERVER_FIELDS
                else
-                 put_error "Unknown query target '#{target}'"
-                 return
+                 error "Unknown query target '#{target}'"
+                 system_exit
                end
 
       if input.blank?
-        put_error "No query input given"
-        return
+        error "No query input given"
+        system_exit
       end
 
-      put_info "Testing #{target} query..."
-      # TODO: abstract this
+      info "Testing #{target} query..."
       _ = Template.compile input, target, fields
-      put_info "Query compiled with no errors"
+      info "Query compiled with no errors"
     rescue ex : TemplateError
       format_template_error ex, input.not_nil!
     end

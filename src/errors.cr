@@ -18,4 +18,7 @@ module Aero
 
   class SyntaxError < TemplateError
   end
+
+  class SystemExit < Exception
+  end
 end

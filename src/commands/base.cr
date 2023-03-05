@@ -18,35 +18,35 @@ module Aero::Commands
       end
     end
 
-    def put_info(data : String) : Nil
+    protected def info(data : _) : Nil
       stdout.puts data
     end
 
-    def put_info(data : Array(String)) : Nil
+    protected def info(data : Array(_)) : Nil
       data.map { |d| stdout.puts d }
     end
 
-    def put_warn(data : String) : Nil
+    protected def warn(data : _) : Nil
       stdout.puts "#{"Warn ".colorize.yellow} #{data}"
     end
 
-    def put_warn(data : Array(String)) : Nil
+    protected def warn(data : Array(_)) : Nil
       data.map { |d| warn d }
     end
 
-    def put_error(data : String) : Nil
-      stderr.puts "#{"Error".colorize.red} #{data}"
-    end
-
-    def put_error(ex : Exception) : Nil
+    protected def error(ex : Exception) : Nil
       error ex.message || ex.to_s
     end
 
-    def put_error(data : Array(String | Exception)) : Nil
-      data.map { |d| put_error d }
+    protected def error(data : _) : Nil
+      stderr.puts "#{"Error".colorize.red} #{data}"
     end
 
-    def format_template_error(ex : TemplateError, query : String) : Nil
+    protected def error(data : Array(_)) : Nil
+      data.map { |d| error d }
+    end
+
+    protected def format_template_error(ex : TemplateError, query : String) : Nil
       border = "|".colorize.red.to_s
       padding = " " * query[...ex.start].size
       width = ex.stop - ex.start + (ex.is_a?(SyntaxError) ? 1 : 0)
@@ -59,8 +59,8 @@ module Aero::Commands
                   "Failed to parse query input"
                 end
 
-      put_error %(#{message} (column #{ex.start}#{" to #{ex.stop}" unless ex.start == ex.stop}))
-      put_error [
+      error %(#{message} (column #{ex.start}#{" to #{ex.stop}" unless ex.start == ex.stop}))
+      error [
         "",
         "#{border} #{query}",
         %(#{border} #{padding}#{"^".colorize.yellow.to_s * width}),
@@ -68,6 +68,10 @@ module Aero::Commands
         "",
         "See 'aero help query' for more information",
       ]
+    end
+
+    protected def system_exit : NoReturn
+      raise SystemExit.new
     end
   end
 end
