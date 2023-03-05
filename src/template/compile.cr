@@ -33,11 +33,11 @@ module Aero::Template
         field = node.left.value.as(String)
 
         unless field.starts_with? key
-          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
+          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.left.start, node.left.stop)
         end
 
         unless model.has_key? field
-          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
+          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.left.start, node.left.stop)
         end
       end
 
@@ -45,18 +45,18 @@ module Aero::Template
         field = node.right.value.as(String)
 
         unless field.starts_with? key
-          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.start, node.stop)
+          raise FieldError.new("Unknown object '#{field.split('.').first}'", node.right.start, node.right.stop)
         end
 
         unless model.has_key? field
-          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.start, node.stop)
+          raise FieldError.new("Unknown field '#{field}' for object #{key}", node.right.start, node.right.stop)
         end
       end
 
-      leftval = node.left.is_a?(Field) ? model[node.left.value].default : node.left
-      rightval = node.right.is_a?(Field) ? model[node.right.value].default : node.right
+      left_value = node.left.is_a?(Field) ? model[node.left.value].default : node.left
+      right_value = node.right.is_a?(Field) ? model[node.right.value].default : node.right
 
-      compare_values node.kind, leftval, rightval
+      compare_values node.kind, left_value, right_value
     end
   end
 
