@@ -14,17 +14,20 @@ module Aero::Commands
                when value = options.get?("scope")
                  value.as_s
                when input.includes?("user")
-                 "users"
+                 "user"
                when input.includes?("server")
-                 "servers"
+                 "server"
                else
-                 put_error ["Cannot identify query target", "Consider using the '--target' flag with this command"]
+                 put_error [
+                   "Cannot identify query target",
+                   "Consider using the '--target' flag with this command",
+                 ]
                  return
                end
 
       fields = case target
-               when "users"   then Models::USER_FIELDS
-               when "servers" then Models::SERVER_FIELDS
+               when "user"   then Models::USER_FIELDS
+               when "server" then Models::SERVER_FIELDS
                else
                  put_error "Unknown query target '#{target}'"
                  return
@@ -35,6 +38,7 @@ module Aero::Commands
         return
       end
 
+      put_info "Testing #{target} query..."
       # TODO: abstract this
       _ = Template.compile input, target, fields
       put_info "Query compiled with no errors"
