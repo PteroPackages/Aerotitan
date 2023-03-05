@@ -74,7 +74,7 @@ module Aero::Template
     end
 
     def self.default
-      new 0, 0, false
+      new 0, 0, "false"
     end
 
     def accepts?(other : Node) : Bool
