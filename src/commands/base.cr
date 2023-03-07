@@ -27,7 +27,7 @@ module Aero::Commands
     end
 
     protected def warn(data : _) : Nil
-      stdout.puts "#{"Warn ".colorize.yellow} #{data}"
+      stdout.puts "#{"Warn".colorize.yellow} #{data}"
     end
 
     protected def warn(data : Array(_)) : Nil

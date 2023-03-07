@@ -6,10 +6,9 @@ module Aero::Actions
     "servers:restart",
     "servers:stop",
     "servers:kill",
-    "servers:command",
-    "servers:reinstall",
     "servers:suspend",
     "servers:unsuspend",
+    "servers:reinstall",
   ]
 
   private class_getter client : Crest::Resource do
@@ -48,5 +47,13 @@ module Aero::Actions
 
   def send_server_power(id : String, signal : String) : Nil
     client.post "/api/client/servers/#{id}/power", {"signal" => signal}
+  end
+
+  def suspend_server(id : Int32) : Nil
+    client.post "/api/application/servers/#{id}/suspend"
+  end
+
+  def unsuspend_server(id : Int32) : Nil
+    client.post "/api/application/servers/#{id}/unsuspend"
   end
 end

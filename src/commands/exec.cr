@@ -27,6 +27,8 @@ module Aero::Commands
       case action
       when "servers:start", "servers:stop", "servers:restart", "servers:kill"
         handle_server_power ignore, priority, query, action[8...]
+      when "servers:suspend"
+        handle_server_suspend ignore, priority, query
       end
     rescue ex : TemplateError
       format_template_error ex, query.not_nil!
@@ -46,7 +48,46 @@ module Aero::Commands
 
       servers.each do |server|
         info "Sending action #{action} to #{server["identifier"]}"
-        Actions.send_server_power server["identifer"].as_s, action
+        Actions.send_server_power server["identifier"].as_s, action
+      rescue Crest::Conflict
+        warn "failed to #{action} server #{server["identifier"]}: conflict"
+      end
+    end
+
+    private def handle_server_suspend(ignore : Array(String), priority : Array(String),
+                                      query : String?) : Nil
+      result = Template.compile query, "server", Models::SERVER_FIELDS
+      servers = Actions.get_all_servers
+      servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
+      servers.reject! &.["status"].as_s? == "suspended"
+      servers.select! { |s| result.execute(s) } if result.value?
+
+      if servers.empty?
+        error "No servers found matching the requirements"
+        system_exit
+      end
+
+      servers.each do |server|
+        info "Suspending server #{server["identifier"]}"
+        Actions.suspend_server server["id"].as_i
+      end
+    end
+
+    private def handle_server_unsuspend(ignore : Array(String), priority : Array(String),
+                                        query : String?) : Nil
+      result = Template.compile query, "server", Models::SERVER_FIELDS
+      servers = Actions.get_all_servers
+      servers.reject! { |s| ignore.includes?(s["id"].as_i) || ignore.includes?(s["identifier"].as_s) }
+      servers.select! { |s| result.execute(s) } if result.value?
+
+      if servers.empty?
+        error "No servers found matching the requirements"
+        system_exit
+      end
+
+      servers.each do |server|
+        info "Unsuspending server #{server["identifier"]}"
+        Actions.unsuspend_server server["id"].as_i
       end
     end
   end
