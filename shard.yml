@@ -1,7 +1,6 @@
 name: aero
-# description:
 version: 0.1.0
-crystal: 1.5.0
+crystal: 1.7.0
 repository: https://github.com/PteroPackages/Aero
 
 authors:

@@ -1,11 +1,9 @@
 /docs/
 /lib/
 /bin/
-/tests/
+/test/
 /.shards/
 /.vscode/
 *.dwarf
 *.cmd
 *.sh
-
-shard.lock
