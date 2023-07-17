@@ -32,6 +32,9 @@ module Aero::Query
     def value : String
       @value.as(String)
     end
+
+    def value=(@value)
+    end
   end
 
   class Lexer
@@ -59,8 +62,9 @@ module Aero::Query
 
       case current_char
       when '\0'
-        # skip
+        return token
       when ' ', '\t'
+        next_char
         return next_token
       when '\r', '\n'
         token.kind = :illegal
@@ -77,21 +81,57 @@ module Aero::Query
           when '\0'
             token.kind = :illegal
             token.value = "unterminated quote string"
-            break
+            return token
           when '\r', '\n'
             token.kind = :illegal
             token.value = "unexpected carriage return or newline"
-            break
+            return token
           when delim
-            next_char
             break
           end
         end
 
         token.kind = :string
+        token.value = @input[token.start+1..current_pos-1]
+      when .ascii_letter?
+        loop do
+          case next_char
+          when '\r', '\n'
+            token.kind = :illegal
+            token.value = "unexpected carriage return or newline"
+            return token
+          when .ascii_letter?, '.', '_'
+            next
+          else
+            break
+          end
+        end
+
+        token.kind = :ident
+        token.value = @input[token.start..current_pos-1]
+      when .ascii_number?
+        loop do
+          case next_char
+          when '\r', '\n'
+            token.kind = :illegal
+            token.value = "unexpected carriage return or newline"
+            return token
+          when .ascii_number?, '.', '_'
+            next
+          else
+            break
+          end
+        end
+
+        token.kind = :number
+        token.value = @input[token.start..current_pos]
+      else
+        token.kind = :illegal
+        token.value = "illegal character #{current_char.inspect}"
       end
 
       token.stop = current_pos
+      next_char unless current_char == '\0'
 
       token
     end
