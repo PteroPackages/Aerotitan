@@ -108,6 +108,8 @@ module Aero::Query
         end
 
         case value = @input[token.start..current_pos-1]
+        when "null"
+          token.kind = :null
         when "and"
           token.kind = :and
         when "or"
