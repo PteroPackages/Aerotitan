@@ -11,7 +11,8 @@ module Aero::Query
 
       Number
       String
-      Boolean
+      True
+      False
       Null
 
       And
@@ -118,6 +119,10 @@ module Aero::Query
         end
 
         case value = @input[token.start..current_pos-1]
+        when "true"
+          token.kind = :true
+        when "false"
+          token.kind = :false
         when "null"
           token.kind = :null
         when "and"
