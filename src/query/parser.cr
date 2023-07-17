@@ -3,14 +3,14 @@ module Aero::Query
     enum Precedence
       Lowest
       Equals
+      Sum
       # LessGreater
-      # Sum
-      # Product
       # Product
 
       def self.from(kind : Token::Kind)
         case kind
         when .equal?, .not_equal? then Precedence::Equals
+        when .and?, .or? then Precedence::Sum
         else Precedence::Lowest
         end
       end
@@ -46,6 +46,11 @@ module Aero::Query
         case peek_token.kind
         when .equal?, .not_equal?
           left = parse_operator left
+          break if current_token.kind.eol?
+          next_token
+        when .and?, .or?
+          left = parse_statement left
+          break if current_token.kind.eol?
           next_token
         else
           break
@@ -75,6 +80,22 @@ module Aero::Query
       raise "Missing right-side expression for operator" if right.nil?
 
       Operator.new kind, left, right
+    end
+
+    private def parse_statement(left : Node) : Expression
+      next_token
+      op = current_token.kind
+
+      next_token
+      prec = Precedence.from current_token.kind
+      right = parse_expression prec
+      raise "Missing right-side expression for statement" if right.nil?
+
+      if op.and?
+        And.new left, right
+      else
+        Or.new left, right
+      end
     end
 
     private def current_token : Token

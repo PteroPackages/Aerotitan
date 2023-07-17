@@ -71,4 +71,22 @@ module Aero::Query
       end
     end
   end
+
+  class And < Expression
+    getter left : Expression
+    getter right : Expression
+
+    def initialize(@left, @right)
+      super left.start, right.stop
+    end
+  end
+
+  class Or < Expression
+    getter left : Expression
+    getter right : Expression
+
+    def initialize(@left, @right)
+      super left.start, right.stop
+    end
+  end
 end
