@@ -6,6 +6,7 @@ module Aero::Query
       Illegal
 
       Equal
+      NotEqual
       Plus
 
       Number
@@ -71,6 +72,15 @@ module Aero::Query
         token.value = "unexpected carriage return or newline"
       when '='
         token.kind = :equal
+      when '!'
+        if next_char == '='
+          token.kind = :not_equal
+          next_char
+        else
+          token.kind = :illegal
+          token.value = "unexpected character '!' (usually used for not-equal)"
+          return token
+        end
       when '+'
         token.kind = :plus
       when '"', '\''
