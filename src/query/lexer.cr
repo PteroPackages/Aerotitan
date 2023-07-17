@@ -13,10 +13,10 @@ module Aero::Query
       Boolean
       Null
 
-      # And
-      # Or
-      # Contains
-      # Missing
+      And
+      Or
+      Contains
+      Missing
     end
 
     property start : Int32
@@ -107,8 +107,19 @@ module Aero::Query
           end
         end
 
-        token.kind = :ident
-        token.value = @input[token.start..current_pos-1]
+        case value = @input[token.start..current_pos-1]
+        when "and"
+          token.kind = :and
+        when "or"
+          token.kind = :or
+        when "contains"
+          token.kind = :contains
+        when "missing"
+          token.kind = :missing
+        else
+          token.kind = :ident
+          token.value = value
+        end
       when .ascii_number?
         loop do
           case next_char
@@ -124,7 +135,7 @@ module Aero::Query
         end
 
         token.kind = :number
-        token.value = @input[token.start..current_pos]
+        token.value = @input[token.start..current_pos-1]
       else
         token.kind = :illegal
         token.value = "illegal character #{current_char.inspect}"
